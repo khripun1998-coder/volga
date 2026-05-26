@@ -1,0 +1,112 @@
+{
+  "products": {
+    "myagkiy-mishka-toptyzhka": [
+      "/products/myagkiy-mishka-toptyzhka-0.jpg",
+      "/products/myagkiy-mishka-toptyzhka-1.jpg",
+      "/products/myagkiy-mishka-toptyzhka-2.jpg"
+    ],
+    "zayka-sonya-amigurumi": [
+      "/products/zayka-sonya-amigurumi-0.jpg",
+      "/products/zayka-sonya-amigurumi-1.jpg",
+      "/products/zayka-sonya-amigurumi-2.jpg"
+    ],
+    "slonenok-timka": [
+      "/products/slonenok-timka-0.jpg",
+      "/products/slonenok-timka-1.jpg",
+      "/products/slonenok-timka-2.jpg"
+    ],
+    "nabor-zveryata-3": [
+      "/products/nabor-zveryata-3-0.jpg",
+      "/products/nabor-zveryata-3-1.jpg",
+      "/products/nabor-zveryata-3-2.jpg"
+    ],
+    "keramicheskaya-kruzhka": [
+      "/products/keramicheskaya-kruzhka-0.jpg",
+      "/products/keramicheskaya-kruzhka-1.jpg",
+      "/products/keramicheskaya-kruzhka-2.jpg"
+    ],
+    "tarelka-kuban-22": [
+      "/products/tarelka-kuban-22-0.jpg",
+      "/products/tarelka-kuban-22-1.jpg",
+      "/products/tarelka-kuban-22-2.jpg"
+    ],
+    "kuvshin-dlya-vody": [
+      "/products/kuvshin-dlya-vody-0.jpg",
+      "/products/kuvshin-dlya-vody-1.jpg",
+      "/products/kuvshin-dlya-vody-2.jpg"
+    ],
+    "lnyanaya-skatert-vyshivka": [
+      "/products/lnyanaya-skatert-vyshivka-0.jpg",
+      "/products/lnyanaya-skatert-vyshivka-1.jpg",
+      "/products/lnyanaya-skatert-vyshivka-2.jpg"
+    ],
+    "sherstyanoy-pled-tuman": [
+      "/products/sherstyanoy-pled-tuman-0.jpg",
+      "/products/sherstyanoy-pled-tuman-1.jpg",
+      "/products/sherstyanoy-pled-tuman-2.jpg"
+    ],
+    "korzina-iz-lozy": [
+      "/products/korzina-iz-lozy-0.jpg",
+      "/products/korzina-iz-lozy-1.jpg",
+      "/products/korzina-iz-lozy-2.jpg"
+    ],
+    "serebryanoe-kolco-volna": [
+      "/products/serebryanoe-kolco-volna-0.jpg",
+      "/products/serebryanoe-kolco-volna-1.jpg",
+      "/products/serebryanoe-kolco-volna-2.jpg"
+    ],
+    "sergi-kapli-serebro": [
+      "/products/sergi-kapli-serebro-0.jpg",
+      "/products/sergi-kapli-serebro-1.jpg",
+      "/products/sergi-kapli-serebro-2.jpg"
+    ],
+    "kulon-pshenica": [
+      "/products/kulon-pshenica-0.jpg",
+      "/products/kulon-pshenica-1.jpg",
+      "/products/kulon-pshenica-2.jpg"
+    ],
+    "soevaya-svecha-step": [
+      "/products/soevaya-svecha-step-0.jpg",
+      "/products/soevaya-svecha-step-1.jpg",
+      "/products/soevaya-svecha-step-2.jpg"
+    ],
+    "aromadiffuzor-more": [
+      "/products/aromadiffuzor-more-0.jpg",
+      "/products/aromadiffuzor-more-1.jpg",
+      "/products/aromadiffuzor-more-2.jpg"
+    ],
+    "derevyannyy-podsvechnik": [
+      "/products/derevyannyy-podsvechnik-0.jpg",
+      "/products/derevyannyy-podsvechnik-1.jpg",
+      "/products/derevyannyy-podsvechnik-2.jpg"
+    ],
+    "kulon-yantar-baltika": [
+      "/products/kulon-yantar-baltika-0.jpg",
+      "/products/kulon-yantar-baltika-1.jpg",
+      "/products/kulon-yantar-baltika-2.jpg"
+    ],
+    "braslet-yantar": [
+      "/products/braslet-yantar-0.jpg",
+      "/products/braslet-yantar-1.jpg",
+      "/products/braslet-yantar-2.jpg"
+    ],
+    "sergi-yantar": [
+      "/products/sergi-yantar-0.jpg",
+      "/products/sergi-yantar-1.jpg",
+      "/products/sergi-yantar-2.jpg"
+    ],
+    "figurka-yantar-obereg": [
+      "/products/figurka-yantar-obereg-0.jpg",
+      "/products/figurka-yantar-obereg-1.jpg",
+      "/products/figurka-yantar-obereg-2.jpg"
+    ]
+  },
+  "shops": {
+    "teplye-lapki": "/products/shop-teplye-lapki-0.jpg",
+    "kubanskaya-glina": "/products/shop-kubanskaya-glina-0.jpg",
+    "loza-i-nit": "/products/shop-loza-i-nit-0.jpg",
+    "serebro-kubani": "/products/shop-serebro-kubani-0.jpg",
+    "svet-v-dome": "/products/shop-svet-v-dome-0.jpg",
+    "baltiyskiy-yantar": "/products/shop-baltiyskiy-yantar-0.jpg"
+  }
+}

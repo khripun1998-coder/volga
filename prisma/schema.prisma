@@ -1,0 +1,196 @@
+// Волга — маркетплейс. MVP-схема.
+// Статусы/роли хранятся строками (SQLite не поддерживает enum в Prisma),
+// допустимые значения указаны в комментариях.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String?
+  role         String   @default("BUYER") // BUYER | SELLER | ADMIN
+  createdAt    DateTime @default(now())
+  shops        Shop[]
+  orders       Order[]
+}
+
+model Shop {
+  id           String    @id @default(cuid())
+  slug         String    @unique
+  name         String
+  description  String
+  region       String    @default("Краснодарский край")
+  city         String?
+  kind         String    @default("workshop") // workshop | production | supplier
+  address      String?
+  exportInfo   String?
+  avatarUrl    String?
+  coverUrl     String?
+  rating       Float     @default(0)
+  ratingCount  Int       @default(0)
+  verified     Boolean   @default(false)
+  promoted     Boolean   @default(false) // продвигаемое место в топе (в будущем — продажа/аукцион)
+  status       String    @default("ACTIVE") // PENDING | ACTIVE | SUSPENDED
+  returnPolicy String?
+  deliveryInfo String?
+  ownerId      String
+  owner        User       @relation(fields: [ownerId], references: [id])
+  products     Product[]
+  orders       Order[]
+  employees    Employee[]
+  createdAt    DateTime   @default(now())
+}
+
+model Category {
+  id       String    @id @default(cuid())
+  slug     String    @unique
+  name     String
+  emoji    String?
+  position Int       @default(0)
+  products Product[]
+}
+
+model Product {
+  id               String           @id @default(cuid())
+  slug             String           @unique
+  title            String
+  shortDescription String
+  description      String
+  price            Int
+  oldPrice         Int?
+  stock            Int              @default(0)
+  handmade         Boolean          @default(false)
+  madeInRussia     Boolean          @default(true)
+  eco              Boolean          @default(false)
+  madeToOrder      Boolean          @default(false)
+  productionDays   Int?
+  weightGrams      Int?
+  dimensions       String?
+  materials        String?
+  care             String?
+  applications     String?
+  production       String?
+  deliveryInfo     String?
+  returnPolicy     String?
+  status           String           @default("ACTIVE") // DRAFT | PENDING | ACTIVE | REJECTED
+  featured         Boolean          @default(false)
+  shopId           String
+  shop             Shop             @relation(fields: [shopId], references: [id])
+  categoryId       String
+  category         Category         @relation(fields: [categoryId], references: [id])
+  images           ProductImage[]
+  variants         ProductVariant[]
+  reviews          Review[]
+  materialSources  MaterialSource[]
+  orderItems       OrderItem[]
+  createdAt        DateTime         @default(now())
+}
+
+model ProductImage {
+  id        String  @id @default(cuid())
+  url       String
+  alt       String?
+  position  Int     @default(0)
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model ProductVariant {
+  id        String  @id @default(cuid())
+  kind      String // "Цвет" | "Размер" | ...
+  value     String
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Review {
+  id         String   @id @default(cuid())
+  rating     Int
+  text       String
+  authorName String
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+}
+
+model MaterialSource {
+  id           String  @id @default(cuid())
+  name         String
+  origin       String?
+  supplierSlug String?
+  supplierName String?
+  position     Int     @default(0)
+  productId    String
+  product      Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Order {
+  id             String      @id @default(cuid())
+  number         String      @unique
+  status         String      @default("ACCEPTED") // ACCEPTED|PROCESSING|SHIPPED|DELIVERED|COMPLETED|CANCELLED
+  total          Int
+  deliveryMethod String
+  paymentMethod  String
+  address        String?
+  comment        String?
+  customerName   String?
+  customerPhone  String?
+  trackingNumber String?
+  escrowStatus   String      @default("HELD") // HELD | RELEASED | REFUNDED
+  shopId         String?
+  shop           Shop?       @relation(fields: [shopId], references: [id])
+  buyerId        String?
+  buyer          User?       @relation(fields: [buyerId], references: [id])
+  items          OrderItem[]
+  disputes       Dispute[]
+  createdAt      DateTime    @default(now())
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  title     String
+  price     Int
+  qty       Int
+  variant   String?
+}
+
+model Employee {
+  id        String   @id @default(cuid())
+  name      String
+  email     String?
+  role      String // Менеджер заказов | Контент-менеджер | Бухгалтер | Помощник
+  shopId    String
+  shop      Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+model Dispute {
+  id         String   @id @default(cuid())
+  orderId    String
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  status     String   @default("OPEN") // OPEN | IN_REVIEW | RESOLVED
+  reason     String
+  resolution String?
+  createdAt  DateTime @default(now())
+}
+
+model ChatMessage {
+  id         String   @id @default(cuid())
+  threadKey  String
+  sender     String // buyer | seller
+  authorName String?
+  text       String
+  createdAt  DateTime @default(now())
+}

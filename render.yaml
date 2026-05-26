@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: volga
+    runtime: node
+    plan: free
+    # Сборка: ставим зависимости (вкл. dev), создаём+заполняем SQLite-базу, собираем Next
+    buildCommand: npm install --include=dev && npm run db:push && npm run db:seed && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: DATABASE_URL
+        value: "file:./dev.db"

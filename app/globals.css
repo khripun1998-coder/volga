@@ -1,0 +1,157 @@
+@import "tailwindcss";
+
+/* ───────────────────────────── Дизайн-система «Волга» ─────────────────────────────
+   Только светлая тема. Премиальность — через свет, воздух и типографику. */
+
+@theme {
+  /* Фон и поверхности */
+  --color-paper: #ffffff;
+  --color-cream: #faf8f4;
+  --color-line: #ece9e2;
+
+  /* Текст */
+  --color-graphite: #1a1a1a;
+  --color-muted: #6b6b6b;
+
+  /* Акцент — «волжский» синий, дозированно */
+  --color-accent: #234e70;
+  --color-accent-hover: #1b3e5a;
+  --color-accent-soft: #eef2f6;
+
+  /* Тег «Эко» */
+  --color-sage: #5b7a6b;
+
+  /* Шрифты */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-serif: var(--font-playfair), ui-serif, Georgia, "Times New Roman", serif;
+
+  /* Тени — мягкие, едва заметные */
+  --shadow-soft: 0 1px 2px rgba(26, 26, 26, 0.04), 0 8px 24px rgba(26, 26, 26, 0.05);
+  --shadow-lift: 0 4px 12px rgba(26, 26, 26, 0.06), 0 18px 40px rgba(26, 26, 26, 0.08);
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-graphite);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background-color: var(--color-accent);
+  color: #ffffff;
+}
+
+/* Заголовки — сериф Playfair */
+.font-display {
+  font-family: var(--font-serif);
+  letter-spacing: -0.01em;
+}
+
+/* Контейнер страницы */
+.container-page {
+  width: 100%;
+  max-width: 80rem; /* 1280px */
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .container-page {
+    padding-inline: 2rem;
+  }
+}
+
+/* Плавное появление секций */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.5s ease both;
+}
+
+/* Фильтры: сворачиваются на мобильном, всегда раскрыты на десктопе */
+@media (min-width: 768px) {
+  details.filters > summary {
+    display: none;
+  }
+  details.filters > .filters-body {
+    display: block !important;
+  }
+}
+details.filters > summary {
+  list-style: none;
+  cursor: pointer;
+}
+details.filters > summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Анимированная атмосфера (блобы) */
+@keyframes blob {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(24px, -32px) scale(1.08);
+  }
+  66% {
+    transform: translate(-22px, 22px) scale(0.95);
+  }
+}
+@media (min-width: 768px) {
+  .animate-blob {
+    animation: blob 18s ease-in-out infinite;
+  }
+  .animate-blob-slow {
+    animation: blob 27s ease-in-out infinite;
+  }
+}
+
+/* Свечение премиальной кнопки */
+.btn-glow {
+  box-shadow: 0 10px 26px -10px rgba(35, 78, 112, 0.5);
+}
+.btn-glow:hover {
+  box-shadow: 0 14px 32px -8px rgba(35, 78, 112, 0.62);
+}
+
+/* Lenis smooth scroll */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-blob,
+  .animate-blob-slow {
+    animation: none;
+  }
+}
