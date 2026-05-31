@@ -1,33 +1,42 @@
 @import "tailwindcss";
 
-/* ───────────────────────────── Дизайн-система «Волга» ─────────────────────────────
-   Только светлая тема. Премиальность — через свет, воздух и типографику. */
+/* ───────────────────────────── Дизайн-система «Волга» · Aurora ─────────────────────────────
+   Утверждённый клиентом концепт 01: фиолетовый акцент, лавандовые поверхности,
+   стекло-морфизм в hero, чистая геометричная типографика (Manrope). */
 
 @theme {
-  /* Фон и поверхности */
-  --color-paper: #ffffff;
-  --color-cream: #faf8f4;
-  --color-line: #ece9e2;
+  /* Поверхности */
+  --color-paper: #ffffff;        /* карточки, сайдбар, шапка */
+  --color-canvas: #f5f4fc;       /* фон страницы */
+  --color-cream: #f3f2fb;        /* мягкая лавандовая подложка/hover */
+  --color-line: #ececf2;         /* линии */
+  --color-line-strong: #dcdce6;
 
   /* Текст */
-  --color-graphite: #1a1a1a;
-  --color-muted: #6b6b6b;
+  --color-graphite: #16161c;
+  --color-muted: #6e6e7a;
 
-  /* Акцент — «волжский» синий, дозированно */
-  --color-accent: #234e70;
-  --color-accent-hover: #1b3e5a;
-  --color-accent-soft: #eef2f6;
+  /* Акцент — фиолетовый Aurora */
+  --color-accent: #6366f1;
+  --color-accent-hover: #4f46e5;
+  --color-accent-soft: #ecebfe;
 
-  /* Тег «Эко» */
-  --color-sage: #5b7a6b;
+  /* Доп. */
+  --color-verified: #4a7c59;
+  --color-sage: #4a7c59;
 
-  /* Шрифты */
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  /* Тёмная плашка статистики */
+  --color-ink-dark: #14152a;
+
+  /* Шрифты — Manrope для UI, Playfair Display для крупных заголовков */
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-playfair), ui-serif, Georgia, "Times New Roman", serif;
 
-  /* Тени — мягкие, едва заметные */
-  --shadow-soft: 0 1px 2px rgba(26, 26, 26, 0.04), 0 8px 24px rgba(26, 26, 26, 0.05);
-  --shadow-lift: 0 4px 12px rgba(26, 26, 26, 0.06), 0 18px 40px rgba(26, 26, 26, 0.08);
+  /* Тени — мягкие фиолетовые */
+  --shadow-soft: 0 1px 2px rgba(40, 40, 90, 0.04), 0 10px 26px rgba(40, 40, 90, 0.06);
+  --shadow-lift: 0 6px 16px rgba(40, 40, 90, 0.08), 0 28px 56px rgba(40, 40, 90, 0.12);
+  --shadow-accent: 0 16px 36px -12px rgba(99, 102, 241, 0.55);
 }
 
 :root {
@@ -39,7 +48,7 @@ html {
 }
 
 body {
-  background-color: var(--color-paper);
+  background-color: var(--color-canvas);
   color: var(--color-graphite);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -51,107 +60,106 @@ body {
   color: #ffffff;
 }
 
-/* Заголовки — сериф Playfair */
+/* Заголовки — Manrope, плотный трекинг */
 .font-display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+}
+
+/* Крупный серифный заголовок (hero) */
+.font-serif {
   font-family: var(--font-serif);
+  font-weight: 600;
   letter-spacing: -0.01em;
 }
 
-/* Контейнер страницы */
+/* Капительная подпись */
+.eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+/* Тонкая обводка */
+.hairline { border: 1px solid var(--color-line); }
+.hairline-b { border-bottom: 1px solid var(--color-line); }
+
+/* Контейнеры */
 .container-page {
   width: 100%;
-  max-width: 80rem; /* 1280px */
+  max-width: 78rem;
   margin-inline: auto;
   padding-inline: 1.25rem;
 }
-
 @media (min-width: 768px) {
-  .container-page {
-    padding-inline: 2rem;
-  }
+  .container-page { padding-inline: 2rem; }
 }
-
-/* Плавное появление секций */
-@keyframes fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-fade-up {
-  animation: fade-up 0.5s ease both;
-}
-
-/* Фильтры: сворачиваются на мобильном, всегда раскрыты на десктопе */
-@media (min-width: 768px) {
-  details.filters > summary {
-    display: none;
-  }
-  details.filters > .filters-body {
-    display: block !important;
-  }
-}
-details.filters > summary {
-  list-style: none;
-  cursor: pointer;
-}
-details.filters > summary::-webkit-details-marker {
-  display: none;
-}
-
-/* Анимированная атмосфера (блобы) */
-@keyframes blob {
-  0%,
-  100% {
-    transform: translate(0, 0) scale(1);
-  }
-  33% {
-    transform: translate(24px, -32px) scale(1.08);
-  }
-  66% {
-    transform: translate(-22px, 22px) scale(0.95);
-  }
+.container-narrow {
+  width: 100%;
+  max-width: 60rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
 }
 @media (min-width: 768px) {
-  .animate-blob {
-    animation: blob 18s ease-in-out infinite;
-  }
-  .animate-blob-slow {
-    animation: blob 27s ease-in-out infinite;
-  }
+  .container-narrow { padding-inline: 2rem; }
 }
 
-/* Свечение премиальной кнопки */
-.btn-glow {
-  box-shadow: 0 10px 26px -10px rgba(35, 78, 112, 0.5);
+/* Появление букв в заголовке */
+@keyframes letter-up {
+  from { opacity: 0; transform: translateY(40%); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-.btn-glow:hover {
-  box-shadow: 0 14px 32px -8px rgba(35, 78, 112, 0.62);
+.letter-up > span {
+  display: inline-block;
+  opacity: 0;
+  animation: letter-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
+
+/* Slide-in на скролле */
+@keyframes slide-in-x {
+  from { opacity: 0; transform: translate3d(var(--dir, -32px), 0, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+.reveal-x { animation: slide-in-x 0.85s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* Плавающие декорации (glass) */
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-14px) rotate(2deg); }
+}
+
+/* Hover-tilt карточек */
+.tilt {
+  transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 600ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+.tilt:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lift);
+}
+
+/* Свечение фиолетовой кнопки */
+.btn-accent { box-shadow: var(--shadow-accent); }
+.btn-accent:hover { filter: brightness(1.06); }
+
+/* Filters details */
+@media (min-width: 768px) {
+  details.filters > summary { display: none; }
+  details.filters > .filters-body { display: block !important; }
+}
+details.filters > summary { list-style: none; cursor: pointer; }
+details.filters > summary::-webkit-details-marker { display: none; }
 
 /* Lenis smooth scroll */
-html.lenis,
-html.lenis body {
-  height: auto;
-}
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
-}
-.lenis.lenis-smooth [data-lenis-prevent] {
-  overscroll-behavior: contain;
-}
-.lenis.lenis-stopped {
-  overflow: hidden;
-}
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
 
 @media (prefers-reduced-motion: reduce) {
-  .animate-blob,
-  .animate-blob-slow {
-    animation: none;
-  }
+  .reveal-x, .letter-up > span { animation: none !important; opacity: 1 !important; transform: none !important; }
+  .float, [class*="animate-"] { animation: none !important; }
 }

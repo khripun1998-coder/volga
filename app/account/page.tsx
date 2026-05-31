@@ -12,6 +12,7 @@ import { OrderStatusBar } from "@/components/order-status-bar";
 import { ChatPanel } from "@/components/chat-panel";
 import { AccountFavorites } from "@/components/account-favorites";
 import { Stars } from "@/components/rating";
+import { getSession } from "@/lib/session";
 import { formatPrice } from "@/lib/utils";
 
 export const metadata = { title: "Кабинет покупателя — Волга" };
@@ -32,16 +33,23 @@ const nav = [
 ];
 
 export default async function AccountPage() {
-  const ctx = await getBuyerContext();
+  const session = await getSession();
+  const ctx = await getBuyerContext(session?.id);
+  const buyerName = ctx?.buyer.name ?? "Гость";
   const [reviews, threadKey] = await Promise.all([
-    prisma.review.findMany({ take: 3, include: { product: true }, orderBy: { createdAt: "desc" } }),
+    prisma.review.findMany({
+      where: { authorName: buyerName },
+      take: 5,
+      include: { product: true },
+      orderBy: { createdAt: "desc" },
+    }),
     getFirstThreadKey(),
   ]);
 
   const orders = ctx?.orders ?? [];
 
   return (
-    <DashShell title="Кабинет покупателя" role="Покупатель · Анна Воронова" nav={nav}>
+    <DashShell title="Кабинет покупателя" role={`Покупатель · ${buyerName}`} nav={nav}>
       <DashSection id="orders" title={`Заказы (${orders.length})`}>
         <div className="space-y-4">
           {orders.map((o) => (
@@ -127,8 +135,8 @@ export default async function AccountPage() {
       <DashSection id="profile" title="Профиль">
         <Card className="max-w-md p-6">
           <dl className="space-y-3 text-sm">
-            <div className="flex justify-between"><dt className="text-muted">Имя</dt><dd className="text-graphite">Анна Воронова</dd></div>
-            <div className="flex justify-between"><dt className="text-muted">Email</dt><dd className="text-graphite">buyer@volga.market</dd></div>
+            <div className="flex justify-between"><dt className="text-muted">Имя</dt><dd className="text-graphite">{ctx?.buyer.name ?? "—"}</dd></div>
+            <div className="flex justify-between"><dt className="text-muted">Email</dt><dd className="text-graphite">{ctx?.buyer.email ?? "—"}</dd></div>
             <div className="flex justify-between"><dt className="text-muted">Телефон</dt><dd className="text-graphite">+7 918 000-00-00</dd></div>
             <div className="flex items-start justify-between gap-4">
               <dt className="text-muted">Адрес</dt>

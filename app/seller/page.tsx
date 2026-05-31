@@ -8,6 +8,7 @@ import {
   escrowLabel,
 } from "@/lib/demo";
 import { getCategories } from "@/lib/queries";
+import { getSession } from "@/lib/session";
 import { DashShell, DashSection, Stat, StatusPill, Card } from "@/components/dashboard";
 import { ProductArtwork } from "@/components/product-artwork";
 import { ChatPanel } from "@/components/chat-panel";
@@ -34,8 +35,10 @@ const field =
   "h-11 w-full rounded-lg border border-line bg-paper px-3.5 text-sm text-graphite focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/15";
 
 export default async function SellerPage() {
+  const session = await getSession();
+  const ownerId = session?.role === "SELLER" ? session.id : undefined;
   const [shop, categories, threadKey] = await Promise.all([
-    getSellerContext(),
+    getSellerContext(ownerId),
     getCategories(),
     getFirstThreadKey(),
   ]);

@@ -1,0 +1,208 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=1280"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Cormorant+Garamond:wght@300;400;500;600&family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=Pacifico&family=Marck+Script&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet"><title>Волга — Объём</title><style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{--bg:#f5f7fd;--surface:#ffffff;--line:#e7ecf7;--text:#131a2b;--muted:#6c7796;--accent:#4361ff;--accent2:#8b5cf6;--soft:#eaeefe;--on:#fff;--badge:#eaeefe;--badge-t:#4361ff;--display:'Plus Jakarta Sans',sans-serif;--body:'Plus Jakarta Sans',sans-serif;--rc:24px;--rb:999px}
+  html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.5;min-width:1280px;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1240px;margin-inline:auto;padding-inline:28px}
+  .art{position:relative;width:100%;height:100%;display:grid;place-items:center;overflow:hidden}
+  .art-emoji{font-size:54px;filter:drop-shadow(0 8px 16px rgba(0,0,0,.16));z-index:2}
+  .art-glow{position:absolute;width:62%;height:62%;border-radius:999px;background:rgba(255,255,255,.34);filter:blur(34px)}
+  .badge{font-size:11px;font-weight:700;padding:4px 9px;border-radius:999px;background:var(--badge);color:var(--badge-t)}
+  .eco{background:rgba(31,107,79,.14);color:#2f7d5b}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;border:none;font-family:var(--body);font-weight:700;font-size:14px}
+  .btn-p{background:var(--accent);color:var(--on);height:46px;padding:0 22px;border-radius:var(--rb)}
+  .btn-o{background:transparent;color:var(--text);height:46px;padding:0 22px;border-radius:var(--rb);border:1px solid var(--line)}
+  .rise{opacity:0;transform:translateY(16px);animation:rise .7s cubic-bezier(.22,1,.36,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+  @keyframes drift{0%,100%{transform:translateY(0) rotate(var(--r,0))}50%{transform:translateY(-18px) rotate(var(--r,0))}}
+  @keyframes blob{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(26px,-22px) scale(1.08)}}
+  @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  
+.ftr{margin-top:56px;border-top:1px solid var(--line);background:var(--surface)}
+.ob-hdr{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.72);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.ob-hdr-in{display:flex;align-items:center;gap:22px;height:74px}
+.ob-logo{color:var(--accent)}
+.ob-nav{display:flex;gap:6px;margin-left:8px}
+.ob-nav a{padding:9px 15px;border-radius:999px;font-size:14px;font-weight:600;color:var(--muted)}
+.ob-nav a.on{background:var(--soft);color:var(--accent)}
+.ob-search{flex:1;max-width:280px;display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:0 16px;height:44px;color:var(--muted);box-shadow:0 6px 18px -12px rgba(40,50,90,.4)}
+.ob-search input{flex:1;border:none;outline:none;background:none;font-family:var(--body);font-size:14px;color:var(--text)}
+.ob-acts{margin-left:auto;display:flex;align-items:center;gap:14px;color:var(--text)}
+.ob-cta{height:44px;color:#fff;background:linear-gradient(120deg,var(--accent),var(--accent2));box-shadow:0 14px 30px -12px rgba(67,97,255,.6)}
+
+.ob-hero{position:relative;overflow:hidden}
+.ob-blob{position:absolute;border-radius:999px;filter:blur(60px);z-index:0}
+.ob-blob.a{width:480px;height:480px;background:#c9d6ff;opacity:.7;left:-140px;top:-170px;animation:blob 22s ease-in-out infinite}
+.ob-blob.b{width:420px;height:420px;background:#e6d6ff;opacity:.7;right:-130px;top:10px;animation:blob 28s ease-in-out infinite}
+.ob-grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(67,97,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(67,97,255,.05) 1px,transparent 1px);background-size:38px 38px;-webkit-mask-image:radial-gradient(120% 80% at 72% 32%,#000,transparent 70%);mask-image:radial-gradient(120% 80% at 72% 32%,#000,transparent 70%);z-index:0}
+.ob-hero-in{position:relative;z-index:2;display:grid;grid-template-columns:1.02fr .98fr;gap:30px;align-items:center;padding:54px 0 72px}
+.ob-kick{display:inline-block;background:#fff;border:1px solid var(--line);font-size:13px;font-weight:700;padding:7px 14px;border-radius:999px;color:var(--accent);box-shadow:0 8px 20px -12px rgba(40,50,90,.35)}
+.ob-hero-tx h1{font-size:62px;font-weight:800;letter-spacing:-.025em;line-height:1.04;margin:18px 0}
+.ob-hero-tx h1 span{background:linear-gradient(100deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.ob-hero-tx p{color:var(--muted);max-width:440px;font-size:17px;line-height:1.6}
+.ob-cta-row{display:flex;align-items:center;gap:18px;margin-top:26px}
+.ob-cta-row .btn-p{color:#fff;background:linear-gradient(120deg,var(--accent),var(--accent2));box-shadow:0 18px 36px -14px rgba(67,97,255,.6)}
+.ob-link{color:var(--accent2);font-weight:700;font-size:14px;display:inline-flex;align-items:center;gap:6px}
+.ob-trust{display:flex;gap:18px;margin-top:26px;flex-wrap:wrap}
+.ob-trust span{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--text)}.ob-trust svg{color:#16a36a}
+
+.ob-stage{position:relative;height:480px;perspective:1500px;perspective-origin:55% 42%}
+.ob-floor{position:absolute;left:52%;bottom:56px;width:300px;height:70px;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(67,97,255,.4),transparent);filter:blur(22px);z-index:0}
+.ob-floor.b{left:42%}
+.ob-3d{position:absolute;inset:0;transform-style:preserve-3d}
+.ob-node{position:absolute;transform-style:preserve-3d}
+.ob-node>.fl{animation:floaty var(--d,7s) ease-in-out infinite}
+.ob-main{left:50%;top:50%;transform:translate(-50%,-50%) rotateY(-17deg) rotateX(7deg)}
+.ob-main-card{width:300px;background:#fff;border:1px solid var(--line);border-radius:26px;padding:14px;box-shadow:0 50px 90px -34px rgba(40,50,90,.5),0 14px 30px -14px rgba(40,50,90,.3)}
+.ob-main-card .art{height:248px;border-radius:18px}.ob-main-card .art-emoji{font-size:104px}
+.ob-main-cap{padding:14px 8px 6px}.ob-main-cap span{font-size:12px;color:var(--muted)}.ob-main-cap b{display:block;font-size:17px;font-weight:700;margin:3px 0}.ob-main-cap i{font-style:normal;font-weight:800;font-size:18px;color:var(--accent)}
+.ob-chip{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.82);backdrop-filter:blur(10px);border:1px solid #fff;border-radius:14px;padding:11px 15px;font-size:13px;font-weight:700;color:var(--text);box-shadow:0 26px 50px -22px rgba(40,50,90,.5);white-space:nowrap}
+.ob-chip svg{color:#ffb400}
+.ob-chip.ob-chip-a{background:linear-gradient(120deg,var(--accent),var(--accent2));color:#fff;border:none}
+.ob-mini{display:block;width:96px;height:96px;border-radius:20px;overflow:hidden;border:3px solid #fff;box-shadow:0 26px 50px -20px rgba(40,50,90,.5)}
+.ob-mini .art-emoji{font-size:40px}
+.ob-c1{left:-10px;top:64px;transform:translateZ(110px)}.ob-c1>.fl{--d:6s}
+.ob-c2{right:-16px;top:128px;transform:translateZ(140px)}.ob-c2>.fl{--d:7.5s;animation-delay:.6s}
+.ob-c3{left:34px;bottom:74px;transform:translateZ(90px)}.ob-c3>.fl{--d:6.6s;animation-delay:.3s}
+.ob-c4{right:4px;top:0;transform:translateZ(60px) rotate(6deg)}.ob-c4>.fl{--d:8s;animation-delay:.2s}
+.ob-c5{left:-4px;bottom:0;transform:translateZ(40px) rotate(-6deg)}.ob-c5>.fl{--d:7.2s;animation-delay:.5s}
+
+.ob-sec-h{display:flex;justify-content:space-between;align-items:flex-end;margin:0 0 22px}.ob-sec-h h2{font-size:30px;font-weight:800;letter-spacing:-.01em}
+.ob-cats{padding-top:48px}
+.ob-cats-g{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;perspective:1100px}
+.ob-ctile{position:relative;display:flex;flex-direction:column;gap:5px;background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:0 18px 40px -28px rgba(40,50,90,.45);transform:rotateX(5deg);transform-style:preserve-3d}
+.ob-ctile-em{font-size:40px;transform:translateZ(26px);filter:drop-shadow(0 12px 14px rgba(40,50,90,.28))}
+.ob-ctile-n{font-weight:700;font-size:15px;margin-top:6px}
+.ob-ctile-c{font-size:12.5px;color:var(--muted)}
+.ob-ctile:nth-child(4n+1){background:linear-gradient(160deg,#eef2ff,#fff)}
+.ob-ctile:nth-child(4n+2){background:linear-gradient(160deg,#eafaf3,#fff)}
+.ob-ctile:nth-child(4n+3){background:linear-gradient(160deg,#fdf0e6,#fff)}
+.ob-ctile:nth-child(4n){background:linear-gradient(160deg,#f3edff,#fff)}
+
+.ob-show{margin-top:60px;background:linear-gradient(180deg,#eaeefe,#f7f8fe);border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden}
+.ob-show-in{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center;padding:56px 0}
+.ob-show-stage{position:relative;height:360px;perspective:1400px;perspective-origin:45% 45%}
+.ob-show-main{left:42%;top:50%;transform:translate(-50%,-50%) rotateY(16deg) rotateX(6deg)}.ob-show-main>.fl{--d:7.5s}
+.ob-main-card.big{width:330px}.ob-main-card.big .art{height:280px}
+.ob-sc1{left:46%;top:24px;transform:translateZ(120px)}.ob-sc1>.fl{--d:6.4s}
+.ob-sc2{left:52%;bottom:34px;transform:translateZ(150px)}.ob-sc2>.fl{--d:7.2s;animation-delay:.4s}
+.ob-sc3{left:6%;top:96px;transform:translateZ(90px)}.ob-sc3>.fl{--d:6.8s;animation-delay:.2s}
+.ob-show-tx h2{font-size:38px;font-weight:800;letter-spacing:-.01em;margin:10px 0 14px}
+.ob-show-tx p{color:var(--muted);max-width:440px;line-height:1.65;font-size:16px}
+.ob-show-pts{display:flex;flex-direction:column;gap:10px;margin:20px 0 24px}
+.ob-show-pts span{display:inline-flex;align-items:center;gap:9px;font-size:14px;font-weight:600}.ob-show-pts svg{color:var(--accent)}
+
+.ob-prods{padding-top:56px}
+.ob-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.ob-card{background:var(--surface);border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:0 20px 44px -30px rgba(40,50,90,.45)}
+.ob-ph{position:relative;aspect-ratio:1/1}.ob-ph .art-emoji{font-size:64px}
+.ob-fav{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:999px;background:rgba(255,255,255,.92);display:grid;place-items:center;color:var(--accent);box-shadow:0 6px 14px -6px rgba(40,50,90,.4)}
+.ob-disc{position:absolute;top:12px;left:12px;background:linear-gradient(120deg,var(--accent),var(--accent2));color:#fff;font-size:12px;font-weight:800;padding:4px 9px;border-radius:999px}
+.ob-tag{position:absolute;bottom:12px;left:12px;background:rgba(255,255,255,.92);font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px}
+.ob-cb{padding:14px 16px 16px}.ob-ct{font-size:14.5px;font-weight:700;line-height:1.3;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}.ob-cs{font-size:12.5px;color:var(--muted);margin-top:3px}.ob-cp{font-weight:800;font-size:17px;margin-top:7px}.ob-cp s{font-size:12px;color:var(--muted);font-weight:500;margin-left:6px}
+
+.ob-shops{padding-top:56px}
+.ob-shops-row{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.ob-shop{position:relative;display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 18px 40px -30px rgba(40,50,90,.4)}
+.ob-shop-r{position:absolute;top:-8px;left:-8px;width:26px;height:26px;border-radius:999px;background:linear-gradient(120deg,var(--accent),var(--accent2));color:#fff;display:grid;place-items:center;font-weight:800;font-size:12px}
+.ob-shop-av{width:46px;height:46px;border-radius:14px;background:var(--soft);color:var(--accent);display:grid;place-items:center;font-weight:800;font-size:20px}
+.ob-shop-n{font-weight:700;font-size:14px;display:flex;align-items:center;gap:5px}.ob-shop-n .vf{color:var(--accent)}
+.ob-shop-s{font-size:12.5px;color:var(--muted);margin-top:3px;display:flex;align-items:center;gap:5px}.ob-shop-s svg{width:11px;height:11px;color:#ffb400}
+.ftr-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:30px;padding:46px 0 28px}
+.ftr-logo{color:var(--accent)}.ftr-ab{font-size:13px;color:var(--muted);margin-top:10px;max-width:280px;line-height:1.5}.ftr-loc{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:12px}
+.ftr h4{font-size:14px;margin-bottom:12px}.ftr ul{list-style:none;display:flex;flex-direction:column;gap:9px}.ftr a{font-size:13.5px;color:var(--muted)}
+.ftr-bot{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding:18px 0;font-size:12px;color:var(--muted)}
+
+
+  /* ── Рукописное лого «Волга» (брашевая подпись, по референсу клиента) ── */
+  .m-logo,.vi-logo,.ob-logo,.le-logo,.be-logo,.ec-logo,.ftr-logo{
+    font-family:'Pacifico','Marck Script','Caveat',cursive !important;
+    font-weight:400 !important;text-transform:none !important;letter-spacing:.005em !important;
+    line-height:1;display:inline-block;padding-bottom:4px}
+  .m-logo{font-size:32px}
+  .m-logo span{font-family:var(--body) !important;font-weight:600 !important;letter-spacing:.22em !important;line-height:1;margin-top:2px}
+  .vi-logo{font-size:34px}
+  .ob-logo{font-size:34px}
+  .le-logo{font-size:33px}
+  .be-logo{font-size:32px}
+  .ec-logo{font-size:34px}
+  .ftr-logo{font-size:32px;padding-bottom:6px}
+  </style></head><body class="v-03-obyom">
+  <header class="ob-hdr"><div class="wrap ob-hdr-in">
+    <a class="ob-logo">Волга</a>
+    <nav class="ob-nav"><a class="on">Каталог</a><a>Магазины</a><a>Ручная работа</a><a>Сделано в России</a></nav>
+    <div class="ob-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="18" height="18"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input placeholder="Поиск изделий и мастеров"></div>
+    <div class="ob-acts"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 10-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/></svg></span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><path d="M3 6h18M16 10a4 4 0 01-8 0"/></svg></span><button class="btn btn-p ob-cta">Открыть магазин</button></div>
+  </div></header>
+
+  <section class="ob-hero">
+    <span class="ob-blob a"></span><span class="ob-blob b"></span><span class="ob-grid-bg"></span>
+    <div class="wrap ob-hero-in">
+      <div class="ob-hero-tx">
+        <span class="ob-kick rise">✦ Маркетплейс ручной работы</span>
+        <h1 class="rise" style="animation-delay:.08s">Изделия мастеров —<br><span>как будто в руках</span></h1>
+        <p class="rise" style="animation-delay:.16s">Тысячи товаров ручной работы со всей России. Рассматривайте в 3D: крутите, приближайте, разглядывайте каждую деталь перед покупкой.</p>
+        <div class="ob-cta-row rise" style="animation-delay:.24s"><button class="btn btn-p">Смотреть каталог <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button><a class="ob-link">Как это работает <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+        <div class="ob-trust rise" style="animation-delay:.32s"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="14" height="14"><path d="M20 6L9 17l-5-5"/></svg> Безопасная сделка</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="14" height="14"><path d="M20 6L9 17l-5-5"/></svg> Доставка по РФ</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="14" height="14"><path d="M20 6L9 17l-5-5"/></svg> Проверенные мастера</span></div>
+      </div>
+      <div class="ob-stage">
+        <span class="ob-floor"></span>
+        <div class="ob-3d">
+          <div class="ob-node ob-main"><div class="fl"><div class="ob-main-card"><div class="art " style="background:linear-gradient(140deg,#e7ecff,#d3deff)"><span class="art-glow"></span><span class="art-emoji">🧸</span></div><div class="ob-main-cap"><span>Тёплые лапки</span><b>Вязаный мишка «Топтыжка»</b><i>1 890 ₽</i></div></div></div></div>
+          <div class="ob-node ob-c1"><div class="fl"><span class="ob-chip"><svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M12 17.3l-5.4 3 1-6-4.4-4.3 6.1-.9L12 3l2.7 5.6 6.1.9-4.4 4.3 1 6z"/></svg> 4.9 · 87 отзывов</span></div></div>
+          <div class="ob-node ob-c2"><div class="fl"><span class="ob-chip ob-chip-a">🧶 Ручная работа</span></div></div>
+          <div class="ob-node ob-c3"><div class="fl"><span class="ob-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="14" height="14"><path d="M20 6L9 17l-5-5"/></svg> В наличии · 6 шт</span></div></div>
+          <div class="ob-node ob-c4"><div class="fl"><span class="ob-mini"><div class="art " style="background:linear-gradient(140deg,#e4f7f0,#cdeee0)"><span class="art-glow"></span><span class="art-emoji">🍶</span></div></span></div></div>
+          <div class="ob-node ob-c5"><div class="fl"><span class="ob-mini"><div class="art " style="background:linear-gradient(140deg,#fdeede,#fbdcbe)"><span class="art-glow"></span><span class="art-emoji">💍</span></div></span></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap ob-cats">
+    <div class="ob-sec-h"><h2>Категории</h2><a class="ob-link">Все <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+    <div class="ob-cats-g"><a class="ob-ctile"><span class="ob-ctile-em">🧸</span><span class="ob-ctile-n">Игрушки и куклы</span><span class="ob-ctile-c">128 изделий</span></a><a class="ob-ctile"><span class="ob-ctile-em">🍶</span><span class="ob-ctile-n">Керамика и посуда</span><span class="ob-ctile-c">214 изделий</span></a><a class="ob-ctile"><span class="ob-ctile-em">💍</span><span class="ob-ctile-n">Украшения</span><span class="ob-ctile-c">176 изделий</span></a><a class="ob-ctile"><span class="ob-ctile-em">🧶</span><span class="ob-ctile-n">Текстиль для дома</span><span class="ob-ctile-c">142 изделий</span></a><a class="ob-ctile"><span class="ob-ctile-em">🪴</span><span class="ob-ctile-n">Декор</span><span class="ob-ctile-c">198 изделий</span></a><a class="ob-ctile"><span class="ob-ctile-em">🕯️</span><span class="ob-ctile-n">Свечи и аромат</span><span class="ob-ctile-c">96 изделий</span></a><a class="ob-ctile"><span class="ob-ctile-em">🪑</span><span class="ob-ctile-n">Мебель</span><span class="ob-ctile-c">54 изделий</span></a><a class="ob-ctile"><span class="ob-ctile-em">🪵</span><span class="ob-ctile-n">Сырьё и материалы</span><span class="ob-ctile-c">73 изделий</span></a></div>
+  </section>
+
+  <section class="ob-show"><div class="wrap ob-show-in">
+    <div class="ob-show-stage">
+      <span class="ob-floor b"></span>
+      <div class="ob-3d">
+        <div class="ob-node ob-show-main"><div class="fl"><div class="ob-main-card big"><div class="art " style="background:linear-gradient(140deg,#e7ecff,#d3deff)"><span class="art-glow"></span><span class="art-emoji">🪑</span></div></div></div></div>
+        <div class="ob-node ob-sc1"><div class="fl"><span class="ob-chip">🪵 Массив дуба</span></div></div>
+        <div class="ob-node ob-sc2"><div class="fl"><span class="ob-chip">💧 Эпоксидная «река»</span></div></div>
+        <div class="ob-node ob-sc3"><div class="fl"><span class="ob-chip ob-chip-a"><svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M12 17.3l-5.4 3 1-6-4.4-4.3 6.1-.9L12 3l2.7 5.6 6.1.9-4.4 4.3 1 6z"/></svg> 5.0</span></div></div>
+      </div>
+    </div>
+    <div class="ob-show-tx">
+      <span class="ob-kick">3D-просмотр товаров</span>
+      <h2>Видно каждую деталь</h2>
+      <p>Каждое изделие можно покрутить и приблизить прямо в карточке — фактуру дерева, плетение, блеск серебра. Меньше вопросов, больше уверенности при покупке.</p>
+      <div class="ob-show-pts"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="14" height="14"><path d="M20 6L9 17l-5-5"/></svg> Интерактивный 3D-просмотр</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="14" height="14"><path d="M20 6L9 17l-5-5"/></svg> Прослеживаемость материалов</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="14" height="14"><path d="M20 6L9 17l-5-5"/></svg> Реальные фото и видео от мастера</span></div>
+      <button class="btn btn-p">Открыть товар <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    </div>
+  </div></section>
+
+  <section class="wrap ob-prods">
+    <div class="ob-sec-h"><h2>Рекомендации для вас</h2><a class="ob-link">Смотреть все <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+    <div class="ob-grid"><a class="ob-card"><div class="ob-ph"><div class="art " style="background:linear-gradient(140deg,#e7ecff,#d3deff)"><span class="art-glow"></span><span class="art-emoji">🧸</span></div><span class="ob-fav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 10-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/></svg></span><span class="ob-disc">−14%</span><span class="ob-tag">Ручная работа</span></div>
+  <div class="ob-cb"><div class="ob-ct">Вязаный мишка «Топтыжка»</div><div class="ob-cs">Тёплые лапки</div><div class="ob-cp">1 890 ₽<s>2 200 ₽</s></div></div></a><a class="ob-card"><div class="ob-ph"><div class="art " style="background:linear-gradient(140deg,#e4f7f0,#cdeee0)"><span class="art-glow"></span><span class="art-emoji">🧸</span></div><span class="ob-fav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 10-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/></svg></span><span class="ob-tag">Ручная работа</span></div>
+  <div class="ob-cb"><div class="ob-ct">Зайка «Соня» амигуруми</div><div class="ob-cs">Тёплые лапки</div><div class="ob-cp">1 650 ₽</div></div></a><a class="ob-card"><div class="ob-ph"><div class="art " style="background:linear-gradient(140deg,#fdeede,#fbdcbe)"><span class="art-glow"></span><span class="art-emoji">🍶</span></div><span class="ob-fav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 10-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/></svg></span><span class="ob-tag">Ручная работа</span></div>
+  <div class="ob-cb"><div class="ob-ct">Керамическая кружка ручной работы</div><div class="ob-cs">Кубанская глина</div><div class="ob-cp">1 290 ₽</div></div></a><a class="ob-card"><div class="ob-ph"><div class="art " style="background:linear-gradient(140deg,#f0e9ff,#e0d3ff)"><span class="art-glow"></span><span class="art-emoji">🍶</span></div><span class="ob-fav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 10-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/></svg></span><span class="ob-tag">Ручная работа</span></div>
+  <div class="ob-cb"><div class="ob-ct">Тарелка «Кубань» 22 см</div><div class="ob-cs">Кубанская глина</div><div class="ob-cp">1 450 ₽</div></div></a><a class="ob-card"><div class="ob-ph"><div class="art " style="background:linear-gradient(140deg,#e7ecff,#d3deff)"><span class="art-glow"></span><span class="art-emoji">🍶</span></div><span class="ob-fav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 10-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/></svg></span><span class="ob-tag">Ручная работа</span></div>
+  <div class="ob-cb"><div class="ob-ct">Кувшин для воды 1,2 л</div><div class="ob-cs">Кубанская глина</div><div class="ob-cp">2 390 ₽</div></div></a><a class="ob-card"><div class="ob-ph"><div class="art " style="background:linear-gradient(140deg,#e4f7f0,#cdeee0)"><span class="art-glow"></span><span class="art-emoji">💍</span></div><span class="ob-fav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 10-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/></svg></span><span class="ob-tag">Ручная работа</span></div>
+  <div class="ob-cb"><div class="ob-ct">Серебряное кольцо «Волна»</div><div class="ob-cs">Серебро Кубани</div><div class="ob-cp">4 500 ₽</div></div></a><a class="ob-card"><div class="ob-ph"><div class="art " style="background:linear-gradient(140deg,#fdeede,#fbdcbe)"><span class="art-glow"></span><span class="art-emoji">💍</span></div><span class="ob-fav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 10-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/></svg></span><span class="ob-tag">Ручная работа</span></div>
+  <div class="ob-cb"><div class="ob-ct">Серьги «Капли»</div><div class="ob-cs">Серебро Кубани</div><div class="ob-cp">3 200 ₽</div></div></a><a class="ob-card"><div class="ob-ph"><div class="art " style="background:linear-gradient(140deg,#f0e9ff,#e0d3ff)"><span class="art-glow"></span><span class="art-emoji">💍</span></div><span class="ob-fav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="18" height="18"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 10-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/></svg></span><span class="ob-tag">Ручная работа</span></div>
+  <div class="ob-cb"><div class="ob-ct">Кулон из янтаря «Балтика»</div><div class="ob-cs">Балтийский янтарь</div><div class="ob-cp">2 900 ₽</div></div></a></div>
+  </section>
+
+  <section class="wrap ob-shops">
+    <div class="ob-sec-h"><h2>Топ магазинов</h2><a class="ob-link">Все магазины <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+    <div class="ob-shops-row"><a class="ob-shop"><span class="ob-shop-r">1</span><span class="ob-shop-av">Т</span><div><div class="ob-shop-n">Тёплые лапки <i class="vf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="14" height="14"><path d="M20 6L9 17l-5-5"/></svg></i></div><div class="ob-shop-s"><svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M12 17.3l-5.4 3 1-6-4.4-4.3 6.1-.9L12 3l2.7 5.6 6.1.9-4.4 4.3 1 6z"/></svg> 4.9 · 4 тов.</div></div></a><a class="ob-shop"><span class="ob-shop-r">2</span><span class="ob-shop-av">С</span><div><div class="ob-shop-n">Стол-Арт <i class="vf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="14" height="14"><path d="M20 6L9 17l-5-5"/></svg></i></div><div class="ob-shop-s"><svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M12 17.3l-5.4 3 1-6-4.4-4.3 6.1-.9L12 3l2.7 5.6 6.1.9-4.4 4.3 1 6z"/></svg> 5.0 · 1 тов.</div></div></a><a class="ob-shop"><span class="ob-shop-r">3</span><span class="ob-shop-av">С</span><div><div class="ob-shop-n">Серебро Кубани <i class="vf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="14" height="14"><path d="M20 6L9 17l-5-5"/></svg></i></div><div class="ob-shop-s"><svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M12 17.3l-5.4 3 1-6-4.4-4.3 6.1-.9L12 3l2.7 5.6 6.1.9-4.4 4.3 1 6z"/></svg> 5.0 · 3 тов.</div></div></a><a class="ob-shop"><span class="ob-shop-r">4</span><span class="ob-shop-av">Б</span><div><div class="ob-shop-n">Балтийский янтарь <i class="vf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="14" height="14"><path d="M20 6L9 17l-5-5"/></svg></i></div><div class="ob-shop-s"><svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M12 17.3l-5.4 3 1-6-4.4-4.3 6.1-.9L12 3l2.7 5.6 6.1.9-4.4 4.3 1 6z"/></svg> 4.9 · 4 тов.</div></div></a><a class="ob-shop"><span class="ob-shop-r">5</span><span class="ob-shop-av">К</span><div><div class="ob-shop-n">Кубанская глина <i class="vf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="14" height="14"><path d="M20 6L9 17l-5-5"/></svg></i></div><div class="ob-shop-s"><svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M12 17.3l-5.4 3 1-6-4.4-4.3 6.1-.9L12 3l2.7 5.6 6.1.9-4.4 4.3 1 6z"/></svg> 4.8 · 3 тов.</div></div></a></div>
+  </section>
+  <footer class="ftr"><div class="wrap"><div class="ftr-grid">
+    <div><div class="ftr-logo">Волга</div><p class="ftr-ab">Маркетплейс изделий ручной работы и товаров российских мастеров. Поддержите локальных производителей.</p><div class="ftr-loc">Краснодар · Калининград</div></div>
+    <div><h4>Покупателям</h4><ul><li><a>Каталог</a></li><li><a>Ручная работа</a></li><li><a>Сделано в России</a></li><li><a>Корзина</a></li></ul></div><div><h4>Продавцам</h4><ul><li><a>Открыть магазин</a></li><li><a>Тарифы</a></li><li><a>Кабинет продавца</a></li></ul></div><div><h4>Площадка</h4><ul><li><a>О Волге</a></li><li><a>Доставка и оплата</a></li><li><a>Возврат и гарантии</a></li></ul></div>
+  </div><div class="ftr-bot"><span>© 2026 Волга</span><span>Оплата при получении · Перевод · Самовывоз</span></div></div></footer></body></html>

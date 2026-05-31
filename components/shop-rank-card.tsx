@@ -41,7 +41,7 @@ export function ShopRankCard({
         {rank}
       </span>
       {shop.promoted && (
-        <span className="absolute right-3 top-3 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-700">
+        <span className="absolute right-3 top-3 rounded-full bg-[#f3f3f3] px-2 py-0.5 text-[10px] font-semibold text-graphite">
           Промо
         </span>
       )}

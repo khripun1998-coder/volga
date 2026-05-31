@@ -1,16 +1,18 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Manrope, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/layout/site-header";
-import { SiteFooter } from "@/components/layout/site-footer";
+import { AppSidebar } from "@/components/layout/app-sidebar";
+import { ChromeWrapper } from "@/components/layout/chrome-wrapper";
 import { SmoothScroll } from "@/components/smooth-scroll";
 import { DemoBar } from "@/components/demo-bar";
 import { Toaster } from "@/components/toaster";
 import { getSession } from "@/lib/session";
 
-const inter = Inter({
-  variable: "--font-inter",
+const manrope = Manrope({
+  variable: "--font-manrope",
   subsets: ["latin", "cyrillic"],
+  weight: ["400", "500", "600", "700", "800"],
   display: "swap",
 });
 
@@ -22,26 +24,28 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Волга — изделия ручной работы и российского производства",
+  title: "Волга — соцсеть мастеров и магазинов ручной работы",
   description:
-    "Маркетплейс уникальных изделий ручной работы и товаров российских мастеров. Поддержите локальных производителей.",
+    "Маркетплейс изделий ручной работы и товаров российских мастеров. Подписывайтесь на магазины, общайтесь с авторами, поддерживайте локальных производителей.",
 };
 
 export default async function RootLayout({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+  modal,
+}: Readonly<{ children: React.ReactNode; modal: React.ReactNode }>) {
   const session = await getSession();
   return (
-    <html
-      lang="ru"
-      className={`${inter.variable} ${playfair.variable} h-full antialiased`}
-    >
-      <body className="flex min-h-full flex-col bg-paper">
+    <html lang="ru" className={`${manrope.variable} ${playfair.variable} h-full antialiased`}>
+      <body className="min-h-full bg-canvas text-graphite">
         <SmoothScroll />
         <DemoBar />
-        <SiteHeader session={session} />
-        <main className="flex-1">{children}</main>
-        <SiteFooter />
+        <ChromeWrapper
+          sidebar={<AppSidebar session={session} />}
+          header={<SiteHeader session={session} />}
+        >
+          {children}
+        </ChromeWrapper>
+        {modal}
         <Toaster />
       </body>
     </html>

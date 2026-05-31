@@ -1,17 +1,24 @@
 import Link from "next/link";
-import { SlidersHorizontal, SearchX } from "lucide-react";
+import {
+  ChevronDown,
+  LayoutGrid,
+  List,
+  RotateCcw,
+  Search,
+  SearchX,
+  Sparkles,
+  Star,
+} from "lucide-react";
 import { getCatalog, getCatalogFacets } from "@/lib/queries";
 import { ProductCard } from "@/components/product-card";
 import { CategoryNav } from "@/components/category-nav";
-import { buttonVariants } from "@/components/ui/button";
 import { pluralize } from "@/lib/utils";
 
 export const metadata = { title: "Каталог — Волга" };
 
 type SP = { [key: string]: string | string[] | undefined };
 
-const one = (v: string | string[] | undefined) =>
-  Array.isArray(v) ? v[0] : v;
+const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v);
 const int = (v: string | string[] | undefined) => {
   const s = one(v);
   if (!s) return undefined;
@@ -20,12 +27,12 @@ const int = (v: string | string[] | undefined) => {
 };
 
 const fieldClass =
-  "h-10 w-full rounded-lg border border-line bg-paper px-3 text-sm text-graphite focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/15";
+  "h-10 w-full rounded-xl border border-line bg-paper px-3 text-sm text-graphite transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/15";
 
 function FilterGroup({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">
+      <div className="mb-2 text-[11px] font-bold uppercase tracking-[0.12em] text-muted">
         {label}
       </div>
       {children}
@@ -55,19 +62,6 @@ export default async function CatalogPage({
     getCatalogFacets(),
   ]);
 
-  const activeCategory = facets.categories.find((c) => c.slug === filters.category);
-  const title = filters.q
-    ? `Поиск: «${filters.q}»`
-    : activeCategory
-      ? activeCategory.name
-      : filters.tag === "handmade"
-        ? "Ручная работа"
-        : filters.tag === "russia"
-          ? "Сделано в России"
-          : filters.tag === "eco"
-            ? "Эко-товары"
-            : "Каталог";
-
   const tagOptions = [
     { value: "", label: "Любые" },
     { value: "handmade", label: "Ручная работа" },
@@ -81,37 +75,66 @@ export default async function CatalogPage({
   ];
 
   return (
-    <div className="container-page py-8">
+    <div className="container-page py-6">
+      {/* Категории-чипсы */}
       <CategoryNav categories={facets.categories} active={filters.category} />
-      <h1 className="font-display mt-7 text-3xl font-semibold text-graphite md:text-4xl">
-        {title}
-      </h1>
-      <p className="mt-1.5 text-muted">
-        {products.length} {pluralize(products.length, ["товар", "товара", "товаров"])}
-      </p>
 
-      <div className="mt-8 grid gap-8 md:grid-cols-[260px_1fr]">
-        <aside className="md:sticky md:top-28 md:self-start">
-          <details className="filters overflow-hidden rounded-xl border border-line bg-paper" open>
-            <summary className="flex items-center gap-2 px-4 py-3 font-medium text-graphite">
-              <SlidersHorizontal className="h-4 w-4" strokeWidth={1.6} /> Фильтры
-            </summary>
-            <form
-              method="get"
-              action="/catalog"
-              className="filters-body space-y-5 px-4 pb-5 pt-1"
-            >
-              <FilterGroup label="Поиск">
+      {/* Заголовок + стеклянный промо-баннер */}
+      <div className="mt-6 grid items-center gap-5 lg:grid-cols-[1fr_1.15fr]">
+        <div>
+          <h1 className="font-serif text-[40px] leading-none text-[#211c4d] md:text-[52px]">
+            Каталог
+          </h1>
+          <p className="mt-2 text-[15px] text-muted">
+            {products.length} {pluralize(products.length, ["товар", "товара", "товаров"])} от
+            талантливых мастеров
+          </p>
+        </div>
+
+        <div className="relative overflow-hidden rounded-[26px] border border-white/70 bg-gradient-to-br from-[#EEEBFB]/80 to-[#E7ECFE]/60 p-6 shadow-[var(--shadow-soft)] backdrop-blur-xl">
+          <div className="relative z-10 flex items-center gap-4">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-white/70 text-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]">
+              <Sparkles className="h-5 w-5" strokeWidth={1.8} />
+            </span>
+            <p className="max-w-[42ch] text-[14.5px] leading-relaxed text-graphite/90">
+              Поддерживайте мастеров и находите уникальные вещи, сделанные с душой.
+            </p>
+          </div>
+          {/* мягкий декор */}
+          <span className="pointer-events-none absolute right-8 top-5 h-3 w-3 rounded-full bg-white/80 shadow-[0_4px_8px_rgba(120,90,140,0.2)]" />
+          <span className="pointer-events-none absolute right-20 bottom-6 h-2.5 w-2.5 rounded-full bg-[#CBBEF6]" />
+          <span className="pointer-events-none absolute right-4 bottom-4 h-4 w-4 rounded-full bg-[#F3B6C2]/80" />
+          <span
+            className="pointer-events-none absolute -right-6 -top-8 h-32 w-32 rounded-full opacity-50 blur-2xl"
+            style={{ background: "#C9BEF5" }}
+          />
+        </div>
+      </div>
+
+      {/* Контент: фильтры + сетка */}
+      <div className="mt-7 grid gap-7 lg:grid-cols-[268px_1fr]">
+        {/* Фильтры */}
+        <aside className="lg:sticky lg:top-24 lg:self-start">
+          <form
+            method="get"
+            action="/catalog"
+            className="space-y-5 rounded-[24px] border border-line bg-paper p-5 shadow-[var(--shadow-soft)]"
+          >
+            <FilterGroup label="Поиск">
+              <div className="relative">
+                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" strokeWidth={1.7} />
                 <input
                   name="q"
                   defaultValue={filters.q ?? ""}
-                  placeholder="Название изделия…"
-                  className={fieldClass}
+                  placeholder="Название товара или мастера"
+                  className={`${fieldClass} pl-9`}
                 />
-              </FilterGroup>
+              </div>
+            </FilterGroup>
 
-              <FilterGroup label="Категория">
-                <select name="category" defaultValue={filters.category ?? ""} className={fieldClass}>
+            <FilterGroup label="Категория">
+              <div className="relative">
+                <select name="category" defaultValue={filters.category ?? ""} className={`${fieldClass} appearance-none pr-9`}>
                   <option value="">Все категории</option>
                   {facets.categories.map((c) => (
                     <option key={c.id} value={c.slug}>
@@ -119,27 +142,30 @@ export default async function CatalogPage({
                     </option>
                   ))}
                 </select>
-              </FilterGroup>
+                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" strokeWidth={1.7} />
+              </div>
+            </FilterGroup>
 
-              <FilterGroup label="Особенности">
-                <div className="space-y-2">
-                  {tagOptions.map((t) => (
-                    <label key={t.value} className="flex items-center gap-2.5 text-sm text-graphite">
-                      <input
-                        type="radio"
-                        name="tag"
-                        value={t.value}
-                        defaultChecked={(filters.tag ?? "") === t.value}
-                        className="h-4 w-4 accent-accent"
-                      />
-                      {t.label}
-                    </label>
-                  ))}
-                </div>
-              </FilterGroup>
+            <FilterGroup label="Особенности">
+              <div className="space-y-2">
+                {tagOptions.map((t) => (
+                  <label key={t.value} className="flex items-center gap-2.5 text-sm text-graphite">
+                    <input
+                      type="radio"
+                      name="tag"
+                      value={t.value}
+                      defaultChecked={(filters.tag ?? "") === t.value}
+                      className="h-4 w-4 accent-accent"
+                    />
+                    {t.label}
+                  </label>
+                ))}
+              </div>
+            </FilterGroup>
 
-              <FilterGroup label="Город">
-                <select name="city" defaultValue={filters.city ?? ""} className={fieldClass}>
+            <FilterGroup label="Город">
+              <div className="relative">
+                <select name="city" defaultValue={filters.city ?? ""} className={`${fieldClass} appearance-none pr-9`}>
                   <option value="">Все города</option>
                   {facets.cities.map((c) => (
                     <option key={c} value={c}>
@@ -147,80 +173,95 @@ export default async function CatalogPage({
                     </option>
                   ))}
                 </select>
-              </FilterGroup>
+                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" strokeWidth={1.7} />
+              </div>
+            </FilterGroup>
 
-              <FilterGroup label="Цена, ₽">
-                <div className="flex items-center gap-2">
-                  <input
-                    type="number"
-                    name="min"
-                    defaultValue={filters.min ?? ""}
-                    placeholder={String(facets.minPrice)}
-                    className={fieldClass}
-                  />
-                  <span className="text-muted">—</span>
-                  <input
-                    type="number"
-                    name="max"
-                    defaultValue={filters.max ?? ""}
-                    placeholder={String(facets.maxPrice)}
-                    className={fieldClass}
-                  />
-                </div>
-              </FilterGroup>
+            <FilterGroup label="Цена, ₽">
+              <div className="flex items-center gap-2">
+                <input type="number" name="min" defaultValue={filters.min ?? ""} placeholder={`от ${facets.minPrice}`} className={fieldClass} />
+                <span className="text-muted">—</span>
+                <input type="number" name="max" defaultValue={filters.max ?? ""} placeholder={`до ${facets.maxPrice}`} className={fieldClass} />
+              </div>
+            </FilterGroup>
 
+            <FilterGroup label="В наличии">
               <label className="flex items-center gap-2.5 text-sm text-graphite">
-                <input
-                  type="checkbox"
-                  name="inStock"
-                  value="1"
-                  defaultChecked={filters.inStock}
-                  className="h-4 w-4 accent-accent"
-                />
+                <input type="checkbox" name="inStock" value="1" defaultChecked={filters.inStock} className="h-4 w-4 accent-accent" />
                 Только в наличии
               </label>
+            </FilterGroup>
 
-              <FilterGroup label="Сортировка">
-                <select name="sort" defaultValue={filters.sort ?? "new"} className={fieldClass}>
+            <FilterGroup label="Сортировка">
+              <div className="relative">
+                <select name="sort" defaultValue={filters.sort ?? "new"} className={`${fieldClass} appearance-none pr-9`}>
                   {sortOptions.map((s) => (
                     <option key={s.value} value={s.value}>
                       {s.label}
                     </option>
                   ))}
                 </select>
-              </FilterGroup>
-
-              <div className="flex gap-2 pt-1">
-                <button type="submit" className={buttonVariants({ size: "sm" })}>
-                  Показать
-                </button>
-                <Link href="/catalog" className={buttonVariants({ variant: "ghost", size: "sm" })}>
-                  Сбросить
-                </Link>
+                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" strokeWidth={1.7} />
               </div>
-            </form>
-          </details>
-        </aside>
+            </FilterGroup>
 
-        <div>
-          {products.length === 0 ? (
-            <div className="grid place-items-center rounded-xl border border-dashed border-line bg-cream py-20 text-center">
-              <SearchX className="h-9 w-9 text-muted" strokeWidth={1.4} />
-              <p className="mt-4 font-medium text-graphite">Ничего не нашлось</p>
-              <p className="mt-1 text-sm text-muted">
-                Попробуйте изменить фильтры или сбросить их.
-              </p>
+            <div className="space-y-2 pt-1">
+              <button
+                type="submit"
+                className="btn-accent inline-flex h-12 w-full items-center justify-center rounded-2xl bg-accent text-sm font-semibold text-white transition"
+              >
+                Показать {products.length} {pluralize(products.length, ["товар", "товара", "товаров"])}
+              </button>
               <Link
                 href="/catalog"
-                className={`${buttonVariants({ variant: "outline", size: "sm" })} mt-5`}
+                className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-2xl text-sm font-medium text-muted transition hover:bg-cream hover:text-graphite"
+              >
+                <RotateCcw className="h-4 w-4" strokeWidth={1.7} />
+                Сбросить фильтры
+              </Link>
+            </div>
+          </form>
+        </aside>
+
+        {/* Сетка */}
+        <div>
+          {/* Ряд сортировки/вида */}
+          <div className="mb-5 flex items-center justify-between">
+            <span className="text-[13px] text-muted">
+              {products.length} {pluralize(products.length, ["товар", "товара", "товаров"])}
+            </span>
+            <div className="flex items-center gap-3">
+              <div className="inline-flex items-center gap-1 rounded-full border border-line bg-paper p-1">
+                <span className="grid h-8 w-8 place-items-center rounded-full bg-accent-soft text-accent">
+                  <LayoutGrid className="h-4 w-4" strokeWidth={1.8} />
+                </span>
+                <span className="grid h-8 w-8 place-items-center rounded-full text-muted">
+                  <List className="h-4 w-4" strokeWidth={1.8} />
+                </span>
+              </div>
+              <span className="inline-flex h-10 items-center gap-2 rounded-full border border-line bg-paper px-4 text-[13px] font-medium text-graphite">
+                По умолчанию
+                <ChevronDown className="h-4 w-4 text-muted" strokeWidth={1.7} />
+              </span>
+            </div>
+          </div>
+
+          {products.length === 0 ? (
+            <div className="grid place-items-center rounded-3xl border border-dashed border-line bg-cream py-20 text-center">
+              <SearchX className="h-9 w-9 text-muted" strokeWidth={1.4} />
+              <p className="mt-4 font-medium text-graphite">Ничего не нашлось</p>
+              <p className="mt-1 text-sm text-muted">Попробуйте изменить фильтры или сбросить их.</p>
+              <Link
+                href="/catalog"
+                className="mt-5 inline-flex h-10 items-center rounded-full border border-line px-5 text-sm font-medium text-graphite transition hover:border-accent hover:text-accent"
               >
                 Сбросить фильтры
               </Link>
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-x-4 gap-y-8 lg:grid-cols-3 xl:grid-cols-4">
-              {products.map((p) => (
-                <ProductCard key={p.id} product={p} />
+            <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+              {products.map((p, i) => (
+                <ProductCard key={p.id} product={p} index={i} showRating />
               ))}
             </div>
           )}

@@ -1,104 +1,189 @@
 import Link from "next/link";
-import { Reveal, Stagger, StaggerItem } from "@/components/motion";
 import { ProductCard } from "@/components/product-card";
-import { ProductArtwork } from "@/components/product-artwork";
-import { SectionHeading } from "@/components/section-heading";
-import { ShopRankCard } from "@/components/shop-rank-card";
-import { getCategories, getCatalog, getTopShops } from "@/lib/queries";
+import { ShopCarousel } from "@/components/shop-carousel";
+import { FeedTabs } from "@/components/feed-tabs";
+import { Heart, Package, Search, Star, Users } from "lucide-react";
+import { Reveal, Stagger, StaggerItem } from "@/components/motion";
+import { HeroVisual } from "@/components/hero-visual";
+import { HeroDecor } from "@/components/hero-decor";
+import { getCatalog, getShops } from "@/lib/queries";
+import { pluralize } from "@/lib/utils";
 
-export default async function HomePage() {
-  const [categories, products, topShops] = await Promise.all([
-    getCategories(),
-    getCatalog({}),
-    getTopShops(12),
+type SP = { [key: string]: string | string[] | undefined };
+const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v);
+
+const STATS = [
+  { n: "1 200+", l: "мастеров", Icon: Users },
+  { n: "8 500+", l: "изделий", Icon: Package },
+  { n: "98%", l: "качество", Icon: Star },
+  { n: "24/7", l: "поддержка", Icon: Heart },
+] as const;
+
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<SP>;
+}) {
+  const sp = await searchParams;
+  const view = one(sp.view) === "products" ? "products" : "shops";
+
+  const [shops, products] = await Promise.all([
+    getShops(),
+    getCatalog({ sort: "new" }),
   ]);
 
+  const productsSorted = [...products].sort((a, b) => {
+    const ra = a.shop.rating * Math.log(1 + a.shop.ratingCount);
+    const rb = b.shop.rating * Math.log(1 + b.shop.ratingCount);
+    if (rb !== ra) return rb - ra;
+    return b.createdAt.getTime() - a.createdAt.getTime();
+  });
+
   return (
-    <>
-      <h1 className="sr-only">Волга — маркетплейс изделий ручной работы</h1>
+    <div className="container-page pb-20 pt-8 md:pt-10">
+      <h1 className="sr-only">Волга — соцсеть мастеров и магазинов</h1>
 
-      {/* Категории */}
-      <section className="container-page pt-8">
-        <Stagger className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-          {categories.map((c, i) => (
-            <StaggerItem key={c.id}>
+      {/* ─────────── HERO ─────────── */}
+      <section className="relative z-30 rounded-[32px] bg-gradient-to-br from-[#F3F1FE] via-[#EFEDFC] to-[#E7ECFE] hairline md:overflow-visible">
+        {/* Hero-визуал поверх правой части — крупный, выходит за край блока (как в макете) */}
+        <div className="pointer-events-none absolute right-[-6%] top-[55%] z-10 hidden h-[158%] w-[70%] -translate-y-1/2 md:block lg:right-[-8%] lg:h-[164%] lg:w-[72%]">
+          <HeroVisual />
+        </div>
+
+        {/* Декор: пуговицы, бусины, искры */}
+        <HeroDecor />
+
+        <div className="relative grid items-center gap-6 p-7 md:grid-cols-[1.15fr_0.85fr] md:p-12">
+          <Reveal className="relative z-20">
+            <p className="eyebrow" style={{ color: "var(--color-accent)" }}>
+              Союз мастеров
+            </p>
+            <h2 className="font-serif mt-4 text-[36px] leading-[1.06] text-[#211c4d] md:text-[48px] lg:text-[54px]">
+              Витрина мастера —<br />
+              как личный канал
+            </h2>
+            <p className="mt-5 max-w-md text-[15.5px] leading-relaxed text-muted">
+              Подписывайтесь на магазины, общайтесь с авторами, поддерживайте
+              локальный крафт. Сначала — лучшие по рейтингу.
+            </p>
+            <div className="mt-7 flex flex-wrap gap-3">
               <Link
-                href={`/catalog?category=${c.slug}`}
-                className="group relative flex h-32 flex-col overflow-hidden rounded-2xl border border-line bg-cream p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-accent/30 hover:shadow-[var(--shadow-soft)]"
+                href="/?view=products"
+                className="btn-accent inline-flex h-12 items-center rounded-full bg-accent px-7 text-[14.5px] font-semibold text-white transition"
               >
-                <span className="relative z-10 max-w-[78%] font-medium leading-tight text-graphite">
-                  {c.name}
-                </span>
-                <ProductArtwork
-                  category={c.slug}
-                  seed={i}
-                  className="absolute -bottom-4 -right-4 h-24 w-24 rotate-6 rounded-2xl opacity-95 transition-transform duration-500 group-hover:rotate-3 group-hover:scale-105"
-                />
+                Открыть ленту
               </Link>
-            </StaggerItem>
-          ))}
-        </Stagger>
-      </section>
-
-      {/* Топ магазинов */}
-      <section className="container-page pt-10">
-        <Reveal>
-          <SectionHeading
-            title="Топ магазинов"
-            subtitle="Рейтинг площадки · место в топе — дополнительное продвижение"
-            href="/shops"
-          />
-        </Reveal>
-        <Reveal>
-          <div className="mt-6 flex gap-4 overflow-x-auto pb-2 pl-3 pt-3">
-            {topShops.map((s, i) => (
-              <ShopRankCard key={s.slug} shop={s} rank={i + 1} className="w-60 shrink-0" />
-            ))}
-          </div>
-        </Reveal>
-      </section>
-
-      {/* Промо-баннер */}
-      <section className="container-page py-8">
-        <Reveal>
-          <Link
-            href="/seller"
-            className="relative flex min-h-[170px] items-center overflow-hidden rounded-[24px] border border-line bg-gradient-to-br from-accent-soft to-cream px-8 py-8 transition-shadow duration-300 hover:shadow-[var(--shadow-lift)] md:px-12"
-          >
-            <div className="animate-blob-slow absolute -right-16 -top-16 h-60 w-60 rounded-full bg-[#cdd9e6] opacity-50 blur-3xl" />
-            <div className="relative max-w-lg">
-              <h2 className="font-display text-2xl font-semibold text-graphite md:text-3xl">
-                Продавайте изделия на Волге
-              </h2>
-              <p className="mt-2 leading-relaxed text-muted">
-                Откройте магазин за пару минут и начните продавать покупателям.
-                Бесплатный старт, без скрытых комиссий.
-              </p>
-              <span className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-accent">
-                Открыть магазин →
-              </span>
+              <Link
+                href="/seller"
+                className="inline-flex h-12 items-center rounded-full bg-paper px-7 text-[14.5px] font-semibold text-graphite hairline transition hover:bg-cream"
+              >
+                Стать продавцом
+              </Link>
             </div>
-          </Link>
-        </Reveal>
+          </Reveal>
+
+          {/* распорка под абсолютный hero-визуал */}
+          <div className="hidden h-[330px] md:block lg:h-[380px]" aria-hidden />
+        </div>
       </section>
 
-      {/* Рекомендации */}
-      <section className="container-page pb-14">
-        <Reveal>
-          <SectionHeading
-            title="Рекомендации для вас"
-            subtitle="Изделия ручной работы от мастеров России"
-            href="/catalog"
+      {/* ─────────── Центральный поиск (над плашкой) ─────────── */}
+      <Reveal>
+        <div className="relative mx-auto mt-8 max-w-2xl">
+          {/* Вязаное сердечко у лупы поиска (отзеркалено) */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/heart.png"
+            alt=""
+            aria-hidden
+            className="pointer-events-none absolute left-[-78px] top-1/2 hidden h-24 w-24 -translate-y-1/2 -scale-x-100 rotate-12 object-contain drop-shadow-[0_14px_20px_rgba(120,90,140,0.26)] lg:left-[-104px] lg:block lg:h-28 lg:w-28"
           />
-        </Reveal>
-        <Stagger className="mt-6 grid grid-cols-2 gap-x-5 gap-y-10 md:grid-cols-3 lg:grid-cols-4">
-          {products.slice(0, 8).map((p, i) => (
-            <StaggerItem key={p.id}>
-              <ProductCard product={p} index={i} />
-            </StaggerItem>
+          <form
+            action="/catalog"
+            method="get"
+            role="search"
+            className="flex items-center gap-2 rounded-full border border-white/70 bg-white/70 p-2 pl-5 shadow-[var(--shadow-soft)] backdrop-blur-xl"
+          >
+            <Search className="h-5 w-5 shrink-0 text-muted" strokeWidth={1.7} />
+          <input
+            name="q"
+            placeholder="Поиск по магазинам и изделиям"
+            aria-label="Поиск по магазинам и изделиям"
+            className="h-11 flex-1 bg-transparent text-[14.5px] text-graphite outline-none placeholder:text-muted/70"
+          />
+          <button
+            type="submit"
+            className="btn-accent inline-flex h-11 items-center rounded-full bg-accent px-7 text-[14px] font-semibold text-white transition"
+          >
+            Найти
+          </button>
+          </form>
+        </div>
+      </Reveal>
+
+      {/* ─────────── Светлая стеклянная плашка статистики ─────────── */}
+      <Reveal>
+        <section className="relative z-10 mt-6 grid grid-cols-2 overflow-hidden rounded-[24px] border border-white/70 bg-gradient-to-br from-white/75 to-white/45 shadow-[inset_0_1px_0_rgba(255,255,255,0.85),var(--shadow-lift)] backdrop-blur-xl md:grid-cols-4">
+          {STATS.map(({ n, l, Icon }, i) => (
+            <div
+              key={l}
+              className={`flex items-center gap-4 px-6 py-7 ${
+                i % 2 === 1 ? "border-l border-white/60" : ""
+              } ${i >= 2 ? "border-t border-white/60 md:border-t-0" : ""} ${
+                i > 0 ? "md:border-l md:border-white/60" : ""
+              }`}
+            >
+              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-accent-soft text-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]">
+                <Icon className="h-5 w-5" strokeWidth={1.8} />
+              </span>
+              <div>
+                <div className="font-display text-[26px] font-extrabold leading-none text-graphite">
+                  {n}
+                </div>
+                <div className="mt-1 text-[12px] text-muted">{l}</div>
+              </div>
+            </div>
           ))}
-        </Stagger>
+        </section>
+      </Reveal>
+
+      {/* ─────────── ТОП НЕДЕЛИ ─────────── */}
+      <section className="mt-12">
+        <div className="mb-2 flex items-start justify-between gap-4">
+          <div>
+            <p className="eyebrow" style={{ color: "var(--color-accent)" }}>
+              Топ недели
+            </p>
+            <h3 className="font-display mt-1.5 text-[26px] leading-tight text-graphite md:text-[32px]">
+              {view === "shops" ? "Топ магазинов" : "Изделия мастеров"}
+            </h3>
+            <p className="mt-1.5 text-[14px] text-muted">
+              {view === "shops"
+                ? "Лучшие магазины недели, выбранные с любовью ✨"
+                : "Изделия от мастеров с самым высоким рейтингом"}
+            </p>
+          </div>
+          <FeedTabs active={view} />
+        </div>
+
+        {view === "shops" ? (
+          <ShopCarousel shops={shops} />
+        ) : (
+          <>
+            <Stagger className="mt-6 grid grid-cols-2 gap-x-5 gap-y-9 md:grid-cols-3 lg:grid-cols-4">
+              {productsSorted.map((p, i) => (
+                <StaggerItem key={p.id}>
+                  <ProductCard product={p} index={i} layout="feed" />
+                </StaggerItem>
+              ))}
+            </Stagger>
+            <p className="mt-8 text-center text-[13px] text-muted">
+              {productsSorted.length}{" "}
+              {pluralize(productsSorted.length, ["изделие", "изделия", "изделий"])} в ленте
+            </p>
+          </>
+        )}
       </section>
-    </>
+    </div>
   );
 }

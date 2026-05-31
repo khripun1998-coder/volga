@@ -124,11 +124,23 @@ export async function getRelatedProducts(
   });
 }
 
+/**
+ * Магазины ленты — теперь сразу с превью первых 4 товаров,
+ * чтобы карточка-«канал» показывала «обложку + миниатюры», как просил клиент.
+ */
 export async function getShops() {
   return prisma.shop.findMany({
     where: { status: "ACTIVE" },
     orderBy: [{ promoted: "desc" }, { rating: "desc" }, { ratingCount: "desc" }],
-    include: { _count: { select: { products: true } } },
+    include: {
+      _count: { select: { products: true } },
+      products: {
+        where: { status: "ACTIVE" },
+        include: cardInclude,
+        orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
+        take: 4,
+      },
+    },
   });
 }
 
@@ -137,7 +149,15 @@ export async function getTopShops(take = 12) {
     where: { status: "ACTIVE" },
     orderBy: [{ promoted: "desc" }, { rating: "desc" }, { ratingCount: "desc" }],
     take,
-    include: { _count: { select: { products: true } } },
+    include: {
+      _count: { select: { products: true } },
+      products: {
+        where: { status: "ACTIVE" },
+        include: cardInclude,
+        orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
+        take: 4,
+      },
+    },
   });
 }
 

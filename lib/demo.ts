@@ -30,8 +30,11 @@ export const productStatusLabel = (c: string) =>
 export const roleLabel = (c: string) =>
   ({ BUYER: "Покупатель", SELLER: "Продавец", ADMIN: "Администратор", MODERATOR: "Модератор" }[c] ?? c);
 
-export async function getBuyerContext() {
-  const buyer = await prisma.user.findUnique({ where: { email: DEMO.buyerEmail } });
+/** Контекст покупателя. По умолчанию — демо‑покупатель, иначе по id сессии. */
+export async function getBuyerContext(userId?: string) {
+  const buyer = userId
+    ? await prisma.user.findUnique({ where: { id: userId } })
+    : await prisma.user.findUnique({ where: { email: DEMO.buyerEmail } });
   if (!buyer) return null;
   const orders = await prisma.order.findMany({
     where: { buyerId: buyer.id },
@@ -41,15 +44,17 @@ export async function getBuyerContext() {
   return { buyer, orders };
 }
 
-export async function getSellerContext() {
-  return prisma.shop.findUnique({
-    where: { slug: DEMO.sellerShop },
-    include: {
-      products: { include: { category: true }, orderBy: { createdAt: "desc" } },
-      orders: { include: { items: true }, orderBy: { createdAt: "desc" } },
-      employees: { orderBy: { createdAt: "asc" } },
-    },
-  });
+/** Магазин продавца. По умолчанию — демо‑магазин, иначе магазин владельца сессии. */
+export async function getSellerContext(ownerId?: string) {
+  const include = {
+    products: { include: { category: true }, orderBy: { createdAt: "desc" as const } },
+    orders: { include: { items: true }, orderBy: { createdAt: "desc" as const } },
+    employees: { orderBy: { createdAt: "asc" as const } },
+  };
+  if (ownerId) {
+    return prisma.shop.findFirst({ where: { ownerId }, include });
+  }
+  return prisma.shop.findUnique({ where: { slug: DEMO.sellerShop }, include });
 }
 
 export async function getAdminDashboard() {

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { DEMO } from "@/lib/demo";
+import { getSession } from "@/lib/session";
 
 export async function addProduct(formData: FormData) {
   const title = String(formData.get("title") ?? "").trim();
@@ -11,7 +12,12 @@ export async function addProduct(formData: FormData) {
   const description = String(formData.get("description") ?? "").trim();
   if (!title || price <= 0) return;
 
-  const shop = await prisma.shop.findUniqueOrThrow({ where: { slug: DEMO.sellerShop } });
+  // Магазин продавца из сессии, иначе демо‑магазин.
+  const session = await getSession();
+  const shop =
+    (session?.role === "SELLER"
+      ? await prisma.shop.findFirst({ where: { ownerId: session.id } })
+      : null) ?? (await prisma.shop.findUniqueOrThrow({ where: { slug: DEMO.sellerShop } }));
   const cat = await prisma.category.findUniqueOrThrow({ where: { slug: category } });
 
   await prisma.product.create({
