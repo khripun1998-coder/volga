@@ -697,6 +697,33 @@ function imagesFor(slug: string, title: string) {
   }));
 }
 
+// ── Пул «клиентов» для демо-истории покупок (реальные заказы от разных людей) ──
+const CLIENT_FIRST = [
+  "Анна", "Мария", "Елена", "Ольга", "Наталья", "Ирина", "Татьяна", "Светлана", "Юлия", "Екатерина",
+  "Дмитрий", "Алексей", "Сергей", "Андрей", "Павел", "Максим", "Игорь", "Роман", "Денис", "Артём",
+  "Виктория", "Полина", "Ксения", "Дарья", "Алина", "Никита", "Владимир", "Глеб", "Кирилл", "Степан",
+];
+const CLIENT_LAST = [
+  "Иванова", "Петров", "Смирнова", "Кузнецов", "Соколова", "Попов", "Лебедева", "Козлов", "Новиков", "Морозова",
+  "Волкова", "Зайцев", "Павлова", "Семёнов", "Голубева", "Виноградов", "Богданова", "Воробьёв", "Фёдорова", "Михайлов",
+];
+function clientName(i: number) {
+  return `${CLIENT_FIRST[i % CLIENT_FIRST.length]} ${CLIENT_LAST[(i * 7 + 3) % CLIENT_LAST.length]}`;
+}
+// Сколько реальных клиентов (уникальных покупателей) у каждого магазина в демо.
+// Числа правдоподобные для молодого регионального маркетплейса (старт — Краснодар).
+const CLIENT_TARGETS: Record<string, number> = {
+  "teplye-lapki": 46,
+  "kubanskaya-glina": 29,
+  "svet-v-dome": 24,
+  "baltiyskiy-yantar": 22,
+  "epoksi-rossiya": 17,
+  "loza-i-nit": 16,
+  "serebro-kubani": 12,
+  "les-kubani": 9,
+  "stol-art": 8,
+};
+
 async function main() {
   console.log("Очистка базы…");
   await prisma.orderItem.deleteMany();
@@ -895,6 +922,64 @@ async function main() {
       { threadKey: thread, sender: "buyer", authorName: buyer.name, text: "Спасибо большое, будем ждать!", createdAt: new Date(Date.now() - 1 * 3600000) },
     ],
   });
+
+  // ── Реальные клиенты: демо-история заказов от разных покупателей ──────────
+  // «Клиент» = тот, кто оформил заказ. История демонстрационная, но механика
+  // честная: счёт клиентов магазина = число уникальных покупателей, и каждая
+  // новая покупка через оформление заказа увеличивает его на 1 (без накрутки).
+  const poolSize = Math.max(...Object.values(CLIENT_TARGETS)) + 8;
+  const clientPool: { id: string; name: string }[] = [];
+  for (let i = 0; i < poolSize; i++) {
+    clientPool.push(
+      await prisma.user.create({
+        data: { email: `client${i + 1}@volga.market`, name: clientName(i), role: "BUYER" },
+      })
+    );
+  }
+
+  const bulkFlow = [
+    { status: "COMPLETED", escrow: "RELEASED" },
+    { status: "DELIVERED", escrow: "HELD" },
+    { status: "COMPLETED", escrow: "RELEASED" },
+    { status: "SHIPPED", escrow: "HELD" },
+  ];
+  const shopsForOrders = await prisma.shop.findMany({
+    include: {
+      products: {
+        where: { status: "ACTIVE" },
+        select: { id: true, title: true, price: true },
+      },
+    },
+  });
+  let windowStart = 0;
+  for (const sh of shopsForOrders) {
+    const target = CLIENT_TARGETS[sh.slug] ?? 0;
+    if (target === 0 || sh.products.length === 0) continue;
+    for (let k = 0; k < target; k++) {
+      const client = clientPool[(windowStart + k) % clientPool.length];
+      const prod = sh.products[k % sh.products.length];
+      const flow = bulkFlow[k % bulkFlow.length];
+      const qty = (k % 3) + 1;
+      const daysAgo = 4 + ((k * 13 + windowStart * 7) % 200);
+      await prisma.order.create({
+        data: {
+          number: `В-${seq++}`,
+          status: flow.status,
+          escrowStatus: flow.escrow,
+          total: prod.price * qty,
+          deliveryMethod: k % 2 === 0 ? "СДЭК" : "Почта России",
+          paymentMethod: k % 2 === 0 ? "Перевод на карту" : "При получении",
+          customerName: client.name,
+          customerPhone: `+7 918 ${String(2000000 + windowStart * 1000 + k).slice(-7)}`,
+          buyerId: client.id,
+          shopId: sh.id,
+          createdAt: new Date(Date.now() - daysAgo * 86400000),
+          items: { create: [{ productId: prod.id, title: prod.title, price: prod.price, qty }] },
+        },
+      });
+    }
+    windowStart += 5;
+  }
 
   const [users, shopCount, products, reviews, orders, disputes] = await Promise.all([
     prisma.user.count(),

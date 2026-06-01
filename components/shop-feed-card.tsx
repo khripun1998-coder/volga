@@ -33,13 +33,10 @@ export interface FeedShop {
   ratingCount: number;
   verified: boolean;
   promoted: boolean;
+  /** Реальные клиенты магазина = уникальные покупатели по заказам (не накрутка). */
+  clients: number;
   _count: { products: number };
   products?: CardProduct[];
-}
-
-// Соц-доказательство: «клиенты» магазина (те, кто покупал). Детерминированно по рейтингу.
-function clientsFor(shop: FeedShop) {
-  return Math.max(120, Math.round(shop.ratingCount * 11 + shop.rating * 24));
 }
 
 export function ShopFeedCard({
@@ -55,7 +52,7 @@ export function ShopFeedCard({
   layout?: "card" | "row";
 }) {
   const cover = COVERS[index % COVERS.length];
-  const clients = clientsFor(shop);
+  const clients = shop.clients;
   const clientsLabel = pluralize(clients, ["клиент", "клиента", "клиентов"]);
 
   // ─────────── Компактная строка (вид «по 1») ───────────
@@ -102,7 +99,10 @@ export function ShopFeedCard({
             <span className="font-semibold text-graphite">{shop.rating.toFixed(1)}</span>
             <span className="text-muted">({shop.ratingCount})</span>
             <span className="text-muted/50">·</span>
-            <span className="inline-flex items-center gap-1 text-muted">
+            <span
+              className="inline-flex items-center gap-1 text-muted"
+              title="Реальные клиенты — те, кто оформил заказ. Не накрутка."
+            >
               <Users className="h-3.5 w-3.5" strokeWidth={1.7} />
               {clients.toLocaleString("ru-RU")} {clientsLabel}
             </span>
@@ -170,7 +170,11 @@ export function ShopFeedCard({
           <span className="font-semibold text-graphite">{shop.rating.toFixed(1)}</span>
           <span className="text-muted">({shop.ratingCount})</span>
           <span className="text-muted/50">·</span>
-          <span className="text-muted">
+          <span
+            className="inline-flex items-center gap-1 text-muted"
+            title="Реальные клиенты — те, кто оформил заказ. Не накрутка."
+          >
+            <Users className="h-3.5 w-3.5" strokeWidth={1.7} />
             {clients.toLocaleString("ru-RU")} {clientsLabel}
           </span>
         </div>

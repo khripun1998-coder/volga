@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { getSession } from "@/lib/session";
 
 export interface CheckoutItem {
   productId: string;
@@ -54,6 +55,21 @@ export async function createOrder(payload: CheckoutPayload): Promise<CheckoutRes
 
   const total = orderItems.reduce((s, i) => s + i.price * i.qty, 0);
 
+  // Привязываем заказ к магазину товаров и к покупателю (если он вошёл) —
+  // чтобы покупка сразу делала человека «клиентом» магазина.
+  const firstProduct = map.get(orderItems[0].productId);
+  const shopId = firstProduct?.shopId ?? null;
+
+  const session = await getSession();
+  let buyerId: string | null = null;
+  if (session?.id) {
+    const u = await prisma.user.findUnique({
+      where: { id: session.id },
+      select: { id: true },
+    });
+    buyerId = u?.id ?? null;
+  }
+
   const order = await prisma.order.create({
     data: {
       number: orderNumber(),
@@ -66,6 +82,8 @@ export async function createOrder(payload: CheckoutPayload): Promise<CheckoutRes
       comment: payload.comment?.trim() || null,
       customerName: payload.name.trim(),
       customerPhone: payload.phone.trim(),
+      shopId,
+      buyerId,
       items: { create: orderItems },
     },
   });

@@ -194,7 +194,7 @@ function Slide({
   active: boolean;
   index: number;
 }) {
-  const clients = Math.max(24, Math.round(shop.ratingCount * 9 + shop.rating * 18));
+  const clients = shop.clients;
   const cover = COVERS[index % COVERS.length];
 
   return (
@@ -243,7 +243,10 @@ function Slide({
             {shop.rating.toFixed(1)}
             <span className="font-normal text-muted">({shop.ratingCount})</span>
           </span>
-          <span className="text-muted">
+          <span
+            className="text-muted"
+            title="Реальные клиенты — те, кто оформил заказ. Не накрутка."
+          >
             · {clients.toLocaleString("ru-RU")}{" "}
             {pluralize(clients, ["клиент", "клиента", "клиентов"])}
           </span>

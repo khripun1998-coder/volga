@@ -113,7 +113,10 @@ export function ChannelHeader({
             </div>
 
             <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-1.5 text-[14px] text-muted">
-              <span className="inline-flex items-center gap-1.5">
+              <span
+                className="inline-flex items-center gap-1.5"
+                title="Реальные клиенты — те, кто оформил заказ в этом магазине. Живые покупки, а не накрутка."
+              >
                 <UserCheck
                   className="h-4 w-4"
                   strokeWidth={1.6}

@@ -125,40 +125,85 @@ export async function getRelatedProducts(
 }
 
 /**
- * Магазины ленты — теперь сразу с превью первых 4 товаров,
- * чтобы карточка-«канал» показывала «обложку + миниатюры», как просил клиент.
+ * «Клиенты» магазина = РЕАЛЬНЫЕ покупатели (а не накрученные подписчики).
+ * Человек становится клиентом сразу, как оформит заказ. Счёт = число уникальных
+ * покупателей по заказам магазина и растёт сам при каждой новой покупке.
+ * Идентичность покупателя: buyerId (вошёл в аккаунт) → телефон (гость) → сам заказ.
+ */
+function buyerKey(o: { buyerId: string | null; customerPhone: string | null; id: string }) {
+  if (o.buyerId) return `u:${o.buyerId}`;
+  if (o.customerPhone) return `t:${o.customerPhone.replace(/\D/g, "")}`;
+  return `o:${o.id}`;
+}
+
+export async function getClientCounts(): Promise<Map<string, number>> {
+  const orders = await prisma.order.findMany({
+    where: { shopId: { not: null } },
+    select: { shopId: true, buyerId: true, customerPhone: true, id: true },
+  });
+  const sets = new Map<string, Set<string>>();
+  for (const o of orders) {
+    if (!o.shopId) continue;
+    let set = sets.get(o.shopId);
+    if (!set) sets.set(o.shopId, (set = new Set<string>()));
+    set.add(buyerKey(o));
+  }
+  const counts = new Map<string, number>();
+  for (const [shopId, set] of sets) counts.set(shopId, set.size);
+  return counts;
+}
+
+export async function getShopClientCount(shopId: string): Promise<number> {
+  const orders = await prisma.order.findMany({
+    where: { shopId },
+    select: { buyerId: true, customerPhone: true, id: true },
+  });
+  return new Set(orders.map(buyerKey)).size;
+}
+
+/**
+ * Магазины ленты — сразу с превью первых 4 товаров и числом реальных клиентов,
+ * чтобы карточка-«канал» показывала «обложку + миниатюры» и честное соц-доказательство.
  */
 export async function getShops() {
-  return prisma.shop.findMany({
-    where: { status: "ACTIVE" },
-    orderBy: [{ promoted: "desc" }, { rating: "desc" }, { ratingCount: "desc" }],
-    include: {
-      _count: { select: { products: true } },
-      products: {
-        where: { status: "ACTIVE" },
-        include: cardInclude,
-        orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
-        take: 4,
+  const [shops, clients] = await Promise.all([
+    prisma.shop.findMany({
+      where: { status: "ACTIVE" },
+      orderBy: [{ promoted: "desc" }, { rating: "desc" }, { ratingCount: "desc" }],
+      include: {
+        _count: { select: { products: true } },
+        products: {
+          where: { status: "ACTIVE" },
+          include: cardInclude,
+          orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
+          take: 4,
+        },
       },
-    },
-  });
+    }),
+    getClientCounts(),
+  ]);
+  return shops.map((s) => ({ ...s, clients: clients.get(s.id) ?? 0 }));
 }
 
 export async function getTopShops(take = 12) {
-  return prisma.shop.findMany({
-    where: { status: "ACTIVE" },
-    orderBy: [{ promoted: "desc" }, { rating: "desc" }, { ratingCount: "desc" }],
-    take,
-    include: {
-      _count: { select: { products: true } },
-      products: {
-        where: { status: "ACTIVE" },
-        include: cardInclude,
-        orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
-        take: 4,
+  const [shops, clients] = await Promise.all([
+    prisma.shop.findMany({
+      where: { status: "ACTIVE" },
+      orderBy: [{ promoted: "desc" }, { rating: "desc" }, { ratingCount: "desc" }],
+      take,
+      include: {
+        _count: { select: { products: true } },
+        products: {
+          where: { status: "ACTIVE" },
+          include: cardInclude,
+          orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
+          take: 4,
+        },
       },
-    },
-  });
+    }),
+    getClientCounts(),
+  ]);
+  return shops.map((s) => ({ ...s, clients: clients.get(s.id) ?? 0 }));
 }
 
 export async function getOrderByNumber(number: string) {

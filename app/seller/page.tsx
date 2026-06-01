@@ -1,4 +1,4 @@
-import { BadgeCheck, MapPin, Plus } from "lucide-react";
+import { BadgeCheck, MapPin, Plus, UserCheck } from "lucide-react";
 import {
   getSellerContext,
   getFirstThreadKey,
@@ -7,7 +7,7 @@ import {
   productStatusLabel,
   escrowLabel,
 } from "@/lib/demo";
-import { getCategories } from "@/lib/queries";
+import { getCategories, getShopClientCount } from "@/lib/queries";
 import { getSession } from "@/lib/session";
 import { DashShell, DashSection, Stat, StatusPill, Card } from "@/components/dashboard";
 import { ProductArtwork } from "@/components/product-artwork";
@@ -34,6 +34,57 @@ const nav = [
 const field =
   "h-11 w-full rounded-lg border border-line bg-paper px-3.5 text-sm text-graphite focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/15";
 
+// Вехи «накопительного эффекта»: владелец видит, как растут реальные клиенты.
+const MILESTONES = [50, 100, 250, 500, 1000, 5000, 10000];
+
+function MilestoneCard({ clients }: { clients: number }) {
+  const next = MILESTONES.find((m) => m > clients) ?? null;
+  const prev = [...MILESTONES].reverse().find((m) => m <= clients) ?? 0;
+  const pct = next
+    ? Math.max(4, Math.round(((clients - prev) / (next - prev)) * 100))
+    : 100;
+  return (
+    <Card className="mt-4 p-5">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <div className="flex items-center gap-2 text-sm font-medium text-graphite">
+            <UserCheck className="h-4 w-4 text-accent" strokeWidth={1.8} /> Клиенты
+          </div>
+          <div className="mt-1 font-display text-3xl font-extrabold leading-none text-graphite">
+            {clients.toLocaleString("ru-RU")}
+          </div>
+          <div className="mt-1.5 text-xs text-muted">
+            Реальные покупатели — те, кто оформил заказ. Не подписки и не накрутка.
+          </div>
+        </div>
+        <div className="text-right text-xs text-muted">
+          {next ? (
+            <>
+              До вехи{" "}
+              <span className="font-semibold text-graphite">
+                {next.toLocaleString("ru-RU")}
+              </span>
+              : ещё {(next - clients).toLocaleString("ru-RU")}
+            </>
+          ) : (
+            <>Веха 10 000+ достигнута 🎉</>
+          )}
+        </div>
+      </div>
+      <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-cream">
+        <div
+          className="h-full rounded-full bg-accent transition-all"
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+      <p className="mt-2 text-xs leading-relaxed text-muted">
+        Чем больше реальных клиентов — тем выше доверие к магазину. На вехах 5 000 и
+        10 000 клиентов — бонусы и продвижение (готовим).
+      </p>
+    </Card>
+  );
+}
+
 export default async function SellerPage() {
   const session = await getSession();
   const ownerId = session?.role === "SELLER" ? session.id : undefined;
@@ -50,6 +101,8 @@ export default async function SellerPage() {
   const active = shop.products.filter((p) => p.status === "ACTIVE").length;
   const pending = shop.products.filter((p) => p.status === "PENDING").length;
   const revenue = shop.orders.reduce((s, o) => s + o.total, 0);
+  const clients = await getShopClientCount(shop.id);
+  const recentOrders = shop.orders.slice(0, 12);
 
   return (
     <DashShell title={shop.name} role={`Продавец · ${shop.city}`} nav={nav}>
@@ -60,6 +113,7 @@ export default async function SellerPage() {
           <Stat label="Выручка" value={formatPrice(revenue)} />
           <Stat label="Рейтинг" value={shop.rating.toFixed(1)} hint={`${shop.ratingCount} отзывов`} />
         </div>
+        <MilestoneCard clients={clients} />
       </DashSection>
 
       <DashSection id="products" title="Товары">
@@ -99,7 +153,7 @@ export default async function SellerPage() {
 
       <DashSection id="orders" title="Заказы">
         <div className="space-y-3">
-          {shop.orders.map((o) => (
+          {recentOrders.map((o) => (
             <Card key={o.id} className="flex flex-wrap items-center gap-4 p-4">
               <div className="min-w-0 flex-1">
                 <div className="text-sm font-medium text-graphite">
@@ -128,6 +182,11 @@ export default async function SellerPage() {
             </Card>
           ))}
         </div>
+        {shop.orders.length > recentOrders.length && (
+          <p className="mt-3 text-center text-sm text-muted">
+            Показаны последние {recentOrders.length} из {shop.orders.length} заказов
+          </p>
+        )}
       </DashSection>
 
       <DashSection id="employees" title="Сотрудники магазина">

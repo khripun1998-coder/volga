@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
-import { getShopBySlug } from "@/lib/queries";
-import { prisma } from "@/lib/prisma";
+import { getShopBySlug, getShopClientCount } from "@/lib/queries";
 import { ChannelHeader } from "@/components/channel-header";
 import { ChannelTabs } from "@/components/channel-tabs";
 import { getShopTheme, themeVars } from "@/lib/shop-theme";
@@ -17,14 +16,9 @@ export default async function ShopLayout({
   if (!shop || shop.status !== "ACTIVE") notFound();
 
   const theme = getShopTheme(shop.slug);
-  // «Клиенты» = реальные покупатели (уникальные buyer'ы по заказам) + база для соц-доказательства.
-  const buyers = await prisma.order.findMany({
-    where: { shopId: shop.id, buyerId: { not: null } },
-    select: { buyerId: true },
-    distinct: ["buyerId"],
-  });
-  const clients =
-    Math.max(36, Math.round(shop.ratingCount * 11 + shop.rating * 22)) + buyers.length;
+  // «Клиенты» = РЕАЛЬНЫЕ покупатели: уникальные заказчики по заказам магазина.
+  // Без накрутки — счёт растёт сам при каждой новой покупке.
+  const clients = await getShopClientCount(shop.id);
 
   return (
     <div style={themeVars(theme)}>
