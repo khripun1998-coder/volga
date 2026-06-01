@@ -194,7 +194,7 @@ function Slide({
   active: boolean;
   index: number;
 }) {
-  const subs = Math.max(24, Math.round(shop.ratingCount * 9 + shop.rating * 18));
+  const clients = Math.max(24, Math.round(shop.ratingCount * 9 + shop.rating * 18));
   const cover = COVERS[index % COVERS.length];
 
   return (
@@ -244,8 +244,8 @@ function Slide({
             <span className="font-normal text-muted">({shop.ratingCount})</span>
           </span>
           <span className="text-muted">
-            · {subs.toLocaleString("ru-RU")}{" "}
-            {pluralize(subs, ["подписчик", "подписчика", "подписчиков"])}
+            · {clients.toLocaleString("ru-RU")}{" "}
+            {pluralize(clients, ["клиент", "клиента", "клиентов"])}
           </span>
         </div>
       </div>

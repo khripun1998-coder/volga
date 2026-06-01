@@ -11,12 +11,13 @@ async function main() {
   log("shop", shop?.slug);
   log("product", product?.slug);
 
-  // --- Follow: создать → посчитать → удалить ---
-  const f = await prisma.follow.create({ data: { userId: user.id, shopId: shop.id } });
-  const cnt = await prisma.follow.count({ where: { shopId: shop.id } });
-  log("follow.created+count", cnt);
-  await prisma.follow.delete({ where: { id: f.id } });
-  log("follow.deleted", (await prisma.follow.count({ where: { shopId: shop.id } })));
+  // --- Клиенты: уникальные покупатели магазина по заказам ---
+  const buyers = await prisma.order.findMany({
+    where: { shopId: shop.id, buyerId: { not: null } },
+    select: { buyerId: true },
+    distinct: ["buyerId"],
+  });
+  log("clients.byOrders", buyers.length);
 
   // --- Review: добавить → пересчитать рейтинг магазина → откатить ---
   const before = await prisma.shop.findUnique({ where: { id: shop.id }, select: { rating: true, ratingCount: true } });

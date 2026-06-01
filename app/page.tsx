@@ -63,8 +63,8 @@ export default async function HomePage({
               как личный канал
             </h2>
             <p className="mt-5 max-w-md text-[15.5px] leading-relaxed text-muted">
-              Подписывайтесь на магазины, общайтесь с авторами, поддерживайте
-              локальный крафт. Сначала — лучшие по рейтингу.
+              Открывайте магазины мастеров, общайтесь с авторами и
+              поддерживайте локальный крафт. Сначала — лучшие по рейтингу.
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
               <Link

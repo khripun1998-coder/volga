@@ -1,6 +1,5 @@
 import Image from "next/image";
-import { BadgeCheck, MapPin, Share2 } from "lucide-react";
-import { SubscribeButton } from "@/components/subscribe-button";
+import { BadgeCheck, MapPin, MessageCircle, Share2, UserCheck } from "lucide-react";
 import { themeVars, type ShopTheme } from "@/lib/shop-theme";
 import { pluralize } from "@/lib/utils";
 
@@ -29,12 +28,12 @@ export function ChannelHeader({
   shop,
   theme,
   productsCount,
-  subscribers,
+  clients,
 }: {
   shop: ChannelShop;
   theme: ShopTheme;
   productsCount: number;
-  subscribers: number;
+  clients: number;
 }) {
   return (
     <header style={themeVars(theme)}>
@@ -114,11 +113,16 @@ export function ChannelHeader({
             </div>
 
             <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-1.5 text-[14px] text-muted">
-              <span>
+              <span className="inline-flex items-center gap-1.5">
+                <UserCheck
+                  className="h-4 w-4"
+                  strokeWidth={1.6}
+                  style={{ color: "var(--accent)" }}
+                />
                 <span className="font-medium text-graphite">
-                  {subscribers.toLocaleString("ru-RU")}
+                  {clients.toLocaleString("ru-RU")}
                 </span>{" "}
-                {pluralize(subscribers, ["подписчик", "подписчика", "подписчиков"])}
+                {pluralize(clients, ["клиент", "клиента", "клиентов"])}
               </span>
               <span aria-hidden>·</span>
               <span>
@@ -137,16 +141,12 @@ export function ChannelHeader({
 
           {/* CTA */}
           <div className="flex flex-wrap items-center gap-2 md:pb-3">
-            <SubscribeButton
-              slug={shop.slug}
-              baseCount={subscribers}
-              accent={theme.accent}
-              compact
-            />
             <a
               href={`/account#chat-${shop.slug}`}
-              className="inline-flex h-11 items-center gap-2 rounded-full border border-line bg-paper px-5 text-sm font-medium text-graphite transition hover:bg-cream"
+              className="inline-flex h-11 items-center gap-2 rounded-full px-6 text-sm font-medium text-white shadow-[0_12px_24px_-12px_rgba(0,0,0,0.25)] transition hover:brightness-105 active:scale-[0.98]"
+              style={{ background: theme.accent }}
             >
+              <MessageCircle className="h-4 w-4" strokeWidth={1.8} />
               Написать
             </a>
             <button

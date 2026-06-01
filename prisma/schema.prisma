@@ -20,7 +20,6 @@ model User {
   createdAt    DateTime @default(now())
   shops        Shop[]
   orders       Order[]
-  follows      Follow[]
 }
 
 model Shop {
@@ -47,7 +46,6 @@ model Shop {
   products     Product[]
   orders       Order[]
   employees    Employee[]
-  followers    Follow[]
   createdAt    DateTime   @default(now())
 }
 
@@ -195,15 +193,4 @@ model ChatMessage {
   authorName String?
   text       String
   createdAt  DateTime @default(now())
-}
-
-model Follow {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  shopId    String
-  shop      Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-
-  @@unique([userId, shopId])
 }

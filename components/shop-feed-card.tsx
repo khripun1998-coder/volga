@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BadgeCheck, Heart, Star } from "lucide-react";
+import { BadgeCheck, ChevronRight, Heart, Star, Users } from "lucide-react";
 import { CoverImage } from "@/components/cover-image";
 import { cn, pluralize } from "@/lib/utils";
 import type { CardProduct } from "@/lib/queries";
@@ -37,18 +37,87 @@ export interface FeedShop {
   products?: CardProduct[];
 }
 
+// Соц-доказательство: «клиенты» магазина (те, кто покупал). Детерминированно по рейтингу.
+function clientsFor(shop: FeedShop) {
+  return Math.max(120, Math.round(shop.ratingCount * 11 + shop.rating * 24));
+}
+
 export function ShopFeedCard({
   shop,
   className,
   index = 0,
+  layout = "card",
 }: {
   shop: FeedShop;
   className?: string;
   index?: number;
+  /** "card" — вертикальная карточка (сетка/лента); "row" — компактная строка (вид «по 1»). */
+  layout?: "card" | "row";
 }) {
   const cover = COVERS[index % COVERS.length];
-  const subscribers = Math.max(120, Math.round(shop.ratingCount * 11 + shop.rating * 24));
+  const clients = clientsFor(shop);
+  const clientsLabel = pluralize(clients, ["клиент", "клиента", "клиентов"]);
 
+  // ─────────── Компактная строка (вид «по 1») ───────────
+  if (layout === "row") {
+    return (
+      <Link
+        href={`/shop/${shop.slug}`}
+        className={cn(
+          "tilt group flex items-center gap-4 overflow-hidden rounded-3xl bg-paper p-3 hairline",
+          className
+        )}
+      >
+        <div className="relative h-24 w-32 shrink-0 overflow-hidden rounded-2xl sm:h-28 sm:w-44">
+          <CoverImage
+            src={`/shops/${shop.slug}.png`}
+            gradient={cover}
+            alt={shop.name}
+            className="absolute inset-0 h-full w-full"
+          />
+          {index < 3 && (
+            <span className="absolute left-2 top-2 rounded-full bg-paper px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent shadow-[var(--shadow-soft)]">
+              ТОП {index + 1}
+            </span>
+          )}
+        </div>
+
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-1.5">
+            <h3 className="font-display line-clamp-1 text-[16px] font-bold leading-tight text-graphite">
+              {shop.name}
+            </h3>
+            {shop.verified && (
+              <BadgeCheck
+                className="h-4 w-4 shrink-0"
+                style={{ color: "var(--color-verified)" }}
+              />
+            )}
+          </div>
+          <p className="mt-1 line-clamp-1 text-[12.5px] text-muted">
+            {shop.description || kindLabel[shop.kind] || "Магазин мастера"}
+          </p>
+          <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12.5px]">
+            <Star className="h-3.5 w-3.5 text-accent" fill="currentColor" strokeWidth={0} />
+            <span className="font-semibold text-graphite">{shop.rating.toFixed(1)}</span>
+            <span className="text-muted">({shop.ratingCount})</span>
+            <span className="text-muted/50">·</span>
+            <span className="inline-flex items-center gap-1 text-muted">
+              <Users className="h-3.5 w-3.5" strokeWidth={1.7} />
+              {clients.toLocaleString("ru-RU")} {clientsLabel}
+            </span>
+          </div>
+        </div>
+
+        <ChevronRight
+          className="hidden h-5 w-5 shrink-0 text-muted/50 transition group-hover:text-accent sm:block"
+          strokeWidth={1.8}
+        />
+      </Link>
+    );
+  }
+
+  // ─────────── Вертикальная карточка (лента / сетка) ───────────
   return (
     <Link
       href={`/shop/${shop.slug}`}
@@ -102,8 +171,7 @@ export function ShopFeedCard({
           <span className="text-muted">({shop.ratingCount})</span>
           <span className="text-muted/50">·</span>
           <span className="text-muted">
-            {subscribers.toLocaleString("ru-RU")}{" "}
-            {pluralize(subscribers, ["подписчик", "подписчика", "подписчиков"])}
+            {clients.toLocaleString("ru-RU")} {clientsLabel}
           </span>
         </div>
       </div>

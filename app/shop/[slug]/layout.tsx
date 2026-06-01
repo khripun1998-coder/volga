@@ -17,9 +17,14 @@ export default async function ShopLayout({
   if (!shop || shop.status !== "ACTIVE") notFound();
 
   const theme = getShopTheme(shop.slug);
-  const dbFollowers = await prisma.follow.count({ where: { shopId: shop.id } });
-  const subscribers =
-    Math.max(36, Math.round(shop.ratingCount * 11 + shop.rating * 22)) + dbFollowers;
+  // «Клиенты» = реальные покупатели (уникальные buyer'ы по заказам) + база для соц-доказательства.
+  const buyers = await prisma.order.findMany({
+    where: { shopId: shop.id, buyerId: { not: null } },
+    select: { buyerId: true },
+    distinct: ["buyerId"],
+  });
+  const clients =
+    Math.max(36, Math.round(shop.ratingCount * 11 + shop.rating * 22)) + buyers.length;
 
   return (
     <div style={themeVars(theme)}>
@@ -27,7 +32,7 @@ export default async function ShopLayout({
         shop={shop}
         theme={theme}
         productsCount={shop.products.length}
-        subscribers={subscribers}
+        clients={clients}
       />
       <div className="container-page">
         <ChannelTabs slug={shop.slug} />

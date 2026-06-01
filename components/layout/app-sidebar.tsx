@@ -213,17 +213,19 @@ function SidebarBody({
       style={isMobile ? undefined : { width, minWidth: width, maxWidth: width }}
       aria-label="Главное меню"
     >
-      {/* Логотип */}
+      {/* Логотип: эмблема + чёткая надпись «Волга» (раньше вязаный курсив читался как «ВолХа») */}
       <div className={cn("flex h-16 items-center px-5", collapsed && "justify-center px-0")}>
-        <Link href="/" onClick={onNavigate} aria-label="Волга — на главную" className="block">
-          {collapsed ? (
-            <span className="block h-9 w-9 overflow-hidden">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/logo.png" alt="Волга" className="h-9 w-auto max-w-none object-left object-contain" />
+        <Link
+          href="/"
+          onClick={onNavigate}
+          aria-label="Волга — на главную"
+          className={cn("flex items-center gap-2.5", collapsed && "gap-0")}
+        >
+          <Emblem className="h-9 w-9" />
+          {!collapsed && (
+            <span className="font-display text-[22px] font-extrabold leading-none tracking-tight text-graphite">
+              Волга
             </span>
-          ) : (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src="/logo.png" alt="Волга" className="h-7 w-auto object-contain" />
           )}
         </Link>
       </div>
