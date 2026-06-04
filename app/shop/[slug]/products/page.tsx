@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getShopBySlug } from "@/lib/queries";
-import { ProductCard } from "@/components/product-card";
+import { ProductsView } from "@/components/products-view";
 
 export default async function ShopAllProducts({
   params,
@@ -24,19 +24,10 @@ export default async function ShopAllProducts({
 
   return (
     <div>
-      <div className="mb-6 flex items-baseline justify-between">
-        <h2 className="font-display text-2xl font-semibold text-graphite">
-          Все работы мастера
-        </h2>
-        <span className="text-[13px] text-muted">
-          {shop.products.length} в каталоге
-        </span>
-      </div>
-      <div className="grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-3 lg:grid-cols-4">
-        {shop.products.map((p, i) => (
-          <ProductCard key={p.id} product={p} index={i} layout="channel" />
-        ))}
-      </div>
+      <h2 className="mb-5 font-display text-2xl font-semibold text-graphite">
+        Все работы мастера
+      </h2>
+      <ProductsView products={shop.products} cardLayout="channel" showRating={false} />
     </div>
   );
 }

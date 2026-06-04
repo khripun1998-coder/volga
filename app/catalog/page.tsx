@@ -1,16 +1,13 @@
 import Link from "next/link";
 import {
   ChevronDown,
-  LayoutGrid,
-  List,
   RotateCcw,
   Search,
   SearchX,
   Sparkles,
-  Star,
 } from "lucide-react";
 import { getCatalog, getCatalogFacets } from "@/lib/queries";
-import { ProductCard } from "@/components/product-card";
+import { ProductsView } from "@/components/products-view";
 import { CategoryNav } from "@/components/category-nav";
 import { pluralize } from "@/lib/utils";
 
@@ -223,29 +220,8 @@ export default async function CatalogPage({
           </form>
         </aside>
 
-        {/* Сетка */}
+        {/* Сетка + переключатель вида */}
         <div>
-          {/* Ряд сортировки/вида */}
-          <div className="mb-5 flex items-center justify-between">
-            <span className="text-[13px] text-muted">
-              {products.length} {pluralize(products.length, ["товар", "товара", "товаров"])}
-            </span>
-            <div className="flex items-center gap-3">
-              <div className="inline-flex items-center gap-1 rounded-full border border-line bg-paper p-1">
-                <span className="grid h-8 w-8 place-items-center rounded-full bg-accent-soft text-accent">
-                  <LayoutGrid className="h-4 w-4" strokeWidth={1.8} />
-                </span>
-                <span className="grid h-8 w-8 place-items-center rounded-full text-muted">
-                  <List className="h-4 w-4" strokeWidth={1.8} />
-                </span>
-              </div>
-              <span className="inline-flex h-10 items-center gap-2 rounded-full border border-line bg-paper px-4 text-[13px] font-medium text-graphite">
-                По умолчанию
-                <ChevronDown className="h-4 w-4 text-muted" strokeWidth={1.7} />
-              </span>
-            </div>
-          </div>
-
           {products.length === 0 ? (
             <div className="grid place-items-center rounded-3xl border border-dashed border-line bg-cream py-20 text-center">
               <SearchX className="h-9 w-9 text-muted" strokeWidth={1.4} />
@@ -259,11 +235,7 @@ export default async function CatalogPage({
               </Link>
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
-              {products.map((p, i) => (
-                <ProductCard key={p.id} product={p} index={i} showRating />
-              ))}
-            </div>
+            <ProductsView products={products} />
           )}
         </div>
       </div>

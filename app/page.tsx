@@ -1,13 +1,12 @@
 import Link from "next/link";
-import { ProductCard } from "@/components/product-card";
 import { ShopCarousel } from "@/components/shop-carousel";
+import { ProductsView } from "@/components/products-view";
 import { FeedTabs } from "@/components/feed-tabs";
 import { Heart, Package, Search, Star, Users } from "lucide-react";
-import { Reveal, Stagger, StaggerItem } from "@/components/motion";
+import { Reveal } from "@/components/motion";
 import { HeroVisual } from "@/components/hero-visual";
 import { HeroDecor } from "@/components/hero-decor";
 import { getCatalog, getShops } from "@/lib/queries";
-import { pluralize } from "@/lib/utils";
 
 type SP = { [key: string]: string | string[] | undefined };
 const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v);
@@ -170,19 +169,9 @@ export default async function HomePage({
         {view === "shops" ? (
           <ShopCarousel shops={shops} />
         ) : (
-          <>
-            <Stagger className="mt-6 grid grid-cols-2 gap-x-5 gap-y-9 md:grid-cols-3 lg:grid-cols-4">
-              {productsSorted.map((p, i) => (
-                <StaggerItem key={p.id}>
-                  <ProductCard product={p} index={i} layout="feed" />
-                </StaggerItem>
-              ))}
-            </Stagger>
-            <p className="mt-8 text-center text-[13px] text-muted">
-              {productsSorted.length}{" "}
-              {pluralize(productsSorted.length, ["изделие", "изделия", "изделий"])} в ленте
-            </p>
-          </>
+          <div className="mt-6">
+            <ProductsView products={productsSorted} />
+          </div>
         )}
       </section>
     </div>
