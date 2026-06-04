@@ -145,7 +145,7 @@ export function ChannelHeader({
           {/* CTA */}
           <div className="flex flex-wrap items-center gap-2 md:pb-3">
             <a
-              href={`/account#chat-${shop.slug}`}
+              href="/account#messages"
               className="inline-flex h-11 items-center gap-2 rounded-full px-6 text-sm font-medium text-white shadow-[0_12px_24px_-12px_rgba(0,0,0,0.25)] transition hover:brightness-105 active:scale-[0.98]"
               style={{ background: theme.accent }}
             >

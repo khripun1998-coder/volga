@@ -1,3 +1,7 @@
+"use client";
+
+import { Children, isValidElement, useEffect, useState } from "react";
+import type { ReactElement } from "react";
 import { cn } from "@/lib/utils";
 
 export function DashShell({
@@ -11,6 +15,23 @@ export function DashShell({
   nav: { label: string; href: string }[];
   children: React.ReactNode;
 }) {
+  // Разделы приходят как DashSection-дети. Показываем ТОЛЬКО выбранный раздел
+  // (правка клиента: табы вместо «ленты» — клик по кнопке открывает свой раздел).
+  const sections = Children.toArray(children).filter(isValidElement) as ReactElement<{
+    id: string;
+  }>[];
+  const tabId = (href: string) => href.replace(/^#/, "");
+  const [active, setActive] = useState(
+    nav[0] ? tabId(nav[0].href) : sections[0]?.props.id ?? ""
+  );
+
+  // Прямые ссылки на раздел (например /seller#orders, /account#messages) открывают нужный таб.
+  useEffect(() => {
+    const h = window.location.hash.replace(/^#/, "");
+    if (h && sections.some((s) => s.props.id === h)) setActive(h);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className="container-page py-8">
       <div className="mb-7">
@@ -23,19 +44,37 @@ export function DashShell({
       </div>
       <div className="grid gap-8 lg:grid-cols-[200px_1fr]">
         <aside className="lg:sticky lg:top-28 lg:self-start">
-          <nav className="flex flex-wrap gap-1 lg:flex-col">
-            {nav.map((n) => (
-              <a
-                key={n.href}
-                href={n.href}
-                className="whitespace-nowrap rounded-lg px-3 py-2 text-sm text-graphite/80 transition hover:bg-cream hover:text-accent"
-              >
-                {n.label}
-              </a>
-            ))}
+          <nav className="flex flex-wrap gap-1 lg:flex-col" role="tablist" aria-label="Разделы кабинета">
+            {nav.map((n) => {
+              const id = tabId(n.href);
+              const on = id === active;
+              return (
+                <button
+                  key={n.href}
+                  type="button"
+                  role="tab"
+                  aria-selected={on}
+                  onClick={() => setActive(id)}
+                  className={cn(
+                    "whitespace-nowrap rounded-lg px-3 py-2 text-left text-sm font-medium transition",
+                    on
+                      ? "bg-accent text-white shadow-[var(--shadow-accent)]"
+                      : "text-graphite/80 hover:bg-cream hover:text-accent"
+                  )}
+                >
+                  {n.label}
+                </button>
+              );
+            })}
           </nav>
         </aside>
-        <div className="min-w-0 space-y-12">{children}</div>
+        <div className="min-w-0">
+          {sections.map((child) => (
+            <div key={child.props.id} hidden={child.props.id !== active}>
+              {child}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -143,8 +143,8 @@ export function AppSidebar({ session }: { session: Session }) {
       label: "Профиль",
       icon: User,
     },
-    { href: "/account#chat", label: "Сообщения", icon: MessageCircle, badge: 3 },
-    { href: "/account#settings", label: "Настройки", icon: Settings },
+    { href: "/account#messages", label: "Сообщения", icon: MessageCircle, badge: 3 },
+    { href: "/account#profile", label: "Настройки", icon: Settings },
     { href: "/catalog", label: "Фильтры поиска", icon: SlidersHorizontal },
   ];
 

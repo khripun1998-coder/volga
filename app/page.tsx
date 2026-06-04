@@ -58,9 +58,10 @@ export default async function HomePage({
             <p className="eyebrow" style={{ color: "var(--color-accent)" }}>
               Союз мастеров
             </p>
-            <h2 className="font-serif mt-4 text-[36px] leading-[1.06] text-[#211c4d] md:text-[48px] lg:text-[54px]">
-              Витрина мастера —<br />
-              как личный канал
+            <h2 className="font-serif mt-4 text-[24px] leading-[1.2] text-[#211c4d] md:text-[29px] lg:text-[33px]">
+              Если вы производитель или мастер — откройте магазин на «Волге»,
+              чтобы продавать свои изделия по всей РФ и за рубежом, поддерживая
+              российское производство
             </h2>
             <p className="mt-5 max-w-md text-[15.5px] leading-relaxed text-muted">
               Открывайте магазины мастеров, общайтесь с авторами и

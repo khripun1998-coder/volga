@@ -22,7 +22,7 @@ const prodTone = (s: string) =>
   s === "ACTIVE" ? "green" : s === "PENDING" ? "amber" : s === "REJECTED" ? "red" : "default";
 
 const nav = [
-  { label: "Обзор", href: "#overview" },
+  { label: "Статистика", href: "#overview" },
   { label: "Товары", href: "#products" },
   { label: "Заказы", href: "#orders" },
   { label: "Сотрудники", href: "#employees" },
@@ -106,7 +106,7 @@ export default async function SellerPage() {
 
   return (
     <DashShell title={shop.name} role={`Продавец · ${shop.city}`} nav={nav}>
-      <DashSection id="overview" title="Обзор">
+      <DashSection id="overview" title="Статистика">
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           <Stat label="Товары" value={active} hint={pending ? `${pending} на модерации` : "все опубликованы"} />
           <Stat label="Заказы" value={shop.orders.length} />
