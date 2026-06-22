@@ -9,6 +9,7 @@ import {
 } from "@/lib/demo";
 import { getCategories, getShopClientCount } from "@/lib/queries";
 import { getSession } from "@/lib/session";
+import { redirect } from "next/navigation";
 import { DashShell, DashSection, Stat, StatusPill, Card } from "@/components/dashboard";
 import { ProductArtwork } from "@/components/product-artwork";
 import { ChatPanel } from "@/components/chat-panel";
@@ -87,7 +88,8 @@ function MilestoneCard({ clients }: { clients: number }) {
 
 export default async function SellerPage() {
   const session = await getSession();
-  const ownerId = session?.role === "SELLER" ? session.id : undefined;
+  if (session?.role !== "SELLER") redirect("/login");
+  const ownerId = session.id;
   const [shop, categories, threadKey] = await Promise.all([
     getSellerContext(ownerId),
     getCategories(),

@@ -14,6 +14,8 @@ import { DashShell, DashSection, Stat, StatusPill, Card } from "@/components/das
 import { ProductArtwork } from "@/components/product-artwork";
 import { formatPrice } from "@/lib/utils";
 import { moderateProduct, resolveDispute } from "./actions";
+import { getSession } from "@/lib/session";
+import { redirect } from "next/navigation";
 
 export const metadata = { title: "Админ-панель — Волга" };
 
@@ -32,6 +34,9 @@ const field =
   "h-10 w-full rounded-lg border border-line bg-paper px-3 text-sm text-graphite focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/15";
 
 export default async function AdminPage() {
+  const session = await getSession();
+  if (session?.role !== "ADMIN") redirect("/login");
+
   const [kpi, queue, disputes, users, orders] = await Promise.all([
     getAdminDashboard(),
     getModerationQueue(),

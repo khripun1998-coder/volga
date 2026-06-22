@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { DEMO } from "@/lib/demo";
+import { ORDER_STATUSES } from "@/lib/demo";
 import { getSession } from "@/lib/session";
 
 export async function addProduct(formData: FormData) {
@@ -12,12 +12,11 @@ export async function addProduct(formData: FormData) {
   const description = String(formData.get("description") ?? "").trim();
   if (!title || price <= 0) return;
 
-  // Магазин продавца из сессии, иначе демо‑магазин.
+  // Только продавец и только в СВОЙ магазин (без подмены на демо-магазин).
   const session = await getSession();
-  const shop =
-    (session?.role === "SELLER"
-      ? await prisma.shop.findFirst({ where: { ownerId: session.id } })
-      : null) ?? (await prisma.shop.findUniqueOrThrow({ where: { slug: DEMO.sellerShop } }));
+  if (session?.role !== "SELLER") return;
+  const shop = await prisma.shop.findFirst({ where: { ownerId: session.id } });
+  if (!shop) return;
   const cat = await prisma.category.findUniqueOrThrow({ where: { slug: category } });
 
   await prisma.product.create({
@@ -41,10 +40,29 @@ export async function addProduct(formData: FormData) {
 }
 
 export async function setOrderStatus(formData: FormData) {
+  // Только продавец и только по СВОИМ заказам; статус — из белого списка.
+  const session = await getSession();
+  if (session?.role !== "SELLER") return;
+  const shop = await prisma.shop.findFirst({
+    where: { ownerId: session.id },
+    select: { id: true },
+  });
+  if (!shop) return;
+
   const id = String(formData.get("id") ?? "");
   const status = String(formData.get("status") ?? "");
-  if (!id || !status) return;
-  await prisma.order.update({ where: { id }, data: { status } });
+  if (!id || !ORDER_STATUSES.some((s) => s.code === status)) return;
+
+  // Эскроу следует за статусом: доставлен/завершён → средства выплачены продавцу.
+  const escrowStatus =
+    status === "DELIVERED" || status === "COMPLETED" ? "RELEASED" : undefined;
+
+  const res = await prisma.order.updateMany({
+    where: { id, shopId: shop.id },
+    data: escrowStatus ? { status, escrowStatus } : { status },
+  });
+  if (res.count === 0) return;
+
   revalidatePath("/seller");
   revalidatePath("/account");
 }

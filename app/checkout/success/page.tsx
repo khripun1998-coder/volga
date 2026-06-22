@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { CheckCircle2 } from "lucide-react";
 import { getOrderByNumber } from "@/lib/queries";
+import { getSession } from "@/lib/session";
 import { buttonVariants } from "@/components/ui/button";
 import { formatPrice } from "@/lib/utils";
 
@@ -37,6 +38,11 @@ export default async function SuccessPage({
       </div>
     );
   }
+
+  // Личные данные (адрес/комментарий) показываем только владельцу заказа.
+  // Номер заказа теперь неугадываемый, но это дополнительная защита.
+  const session = await getSession();
+  const isOwner = !order.buyerId || session?.id === order.buyerId;
 
   const activeIndex = Math.max(
     0,
@@ -111,14 +117,14 @@ export default async function SuccessPage({
             <dt className="text-muted">Получение</dt>
             <dd className="text-right text-graphite">
               {order.deliveryMethod}
-              {order.address ? ` · ${order.address}` : ""}
+              {order.address && isOwner ? ` · ${order.address}` : ""}
             </dd>
           </div>
           <div className="flex justify-between gap-4">
             <dt className="text-muted">Оплата</dt>
             <dd className="text-graphite">{order.paymentMethod}</dd>
           </div>
-          {order.comment && (
+          {order.comment && isOwner && (
             <div className="flex justify-between gap-4">
               <dt className="text-muted">Комментарий</dt>
               <dd className="text-right text-graphite">{order.comment}</dd>

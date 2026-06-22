@@ -13,6 +13,7 @@ import { ChatPanel } from "@/components/chat-panel";
 import { AccountFavorites } from "@/components/account-favorites";
 import { Stars } from "@/components/rating";
 import { getSession } from "@/lib/session";
+import { redirect } from "next/navigation";
 import { formatPrice } from "@/lib/utils";
 
 export const metadata = { title: "Кабинет покупателя — Волга" };
@@ -34,7 +35,8 @@ const nav = [
 
 export default async function AccountPage() {
   const session = await getSession();
-  const ctx = await getBuyerContext(session?.id);
+  if (!session) redirect("/login");
+  const ctx = await getBuyerContext(session.id);
   const buyerName = ctx?.buyer.name ?? "Гость";
   const [reviews, threadKey] = await Promise.all([
     prisma.review.findMany({

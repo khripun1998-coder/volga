@@ -1,9 +1,9 @@
 "use server";
 
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
 import { prisma } from "@/lib/prisma";
+import { setSession, clearSession } from "@/lib/session";
 
 function hashPassword(pw: string): string {
   const salt = randomBytes(16).toString("hex");
@@ -17,16 +17,6 @@ function verifyPassword(pw: string, stored: string): boolean {
   const test = scryptSync(pw, salt, 64);
   const orig = Buffer.from(hash, "hex");
   return orig.length === test.length && timingSafeEqual(orig, test);
-}
-
-async function setSession(user: { id: string; name: string; role: string }) {
-  const c = await cookies();
-  c.set("volga_session", JSON.stringify({ id: user.id, name: user.name, role: user.role }), {
-    path: "/",
-    httpOnly: true,
-    sameSite: "lax",
-    maxAge: 60 * 60 * 24 * 7,
-  });
 }
 
 function homeFor(role: string) {
@@ -44,7 +34,7 @@ export async function login(formData: FormData) {
     redirect("/login?error=1");
   }
 
-  await setSession(user);
+  await setSession({ id: user.id, name: user.name, role: user.role });
   redirect(homeFor(user.role));
 }
 
@@ -66,12 +56,11 @@ export async function register(formData: FormData) {
     },
   });
 
-  await setSession(user);
+  await setSession({ id: user.id, name: user.name, role: user.role });
   redirect("/account");
 }
 
 export async function logout() {
-  const c = await cookies();
-  c.delete("volga_session");
+  await clearSession();
   redirect("/");
 }
