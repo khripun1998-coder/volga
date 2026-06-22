@@ -2,8 +2,23 @@ import Link from "next/link";
 import { Star } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import { FavoriteButton } from "@/components/favorite-button";
-import { TilePlaceholder } from "@/components/tile-placeholder";
+import { CoverImage } from "@/components/cover-image";
 import type { CardProduct } from "@/lib/queries";
+
+// Мягкие лавандовые подложки под фото (фолбэк, если фото нет/не загрузилось)
+const PRODUCT_COVERS = [
+  "linear-gradient(135deg,#ECEAFE 0%,#D9D3FB 100%)",
+  "linear-gradient(135deg,#E6EEFF 0%,#CFE0FB 100%)",
+  "linear-gradient(135deg,#FBEAF6 0%,#F0CDE8 100%)",
+  "linear-gradient(135deg,#EAECFF 0%,#D2D6F8 100%)",
+  "linear-gradient(135deg,#E9F1FE 0%,#CCE0F7 100%)",
+  "linear-gradient(135deg,#F1EAFE 0%,#DCC9F6 100%)",
+];
+function coverIndex(id: string) {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
+  return h % PRODUCT_COVERS.length;
+}
 
 export function ProductCard({
   product,
@@ -23,6 +38,8 @@ export function ProductCard({
     product.oldPrice && product.oldPrice > product.price
       ? Math.round((1 - product.price / product.oldPrice) * 100)
       : null;
+
+  const cover = PRODUCT_COVERS[coverIndex(product.id)];
 
   const fav = {
     productId: product.id,
@@ -45,10 +62,11 @@ export function ProductCard({
           aria-label={`${product.title} — ${product.shop.name}`}
         >
           <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-2xl sm:h-28 sm:w-28">
-            <TilePlaceholder
-              seed={index + 1}
-              size="lg"
-              className="absolute inset-0 rounded-none border-0"
+            <CoverImage
+              src={product.images[0]?.url}
+              gradient={cover}
+              alt={product.title}
+              className="absolute inset-0 h-full w-full"
             />
             {discount && (
               <span className="absolute left-1.5 top-1.5 rounded-full bg-paper px-2 py-0.5 text-[10px] font-semibold text-graphite hairline">
@@ -102,10 +120,11 @@ export function ProductCard({
       >
         <div className="tilt overflow-hidden rounded-[24px] bg-paper hairline">
           <div className="relative aspect-square">
-            <TilePlaceholder
-              seed={index + 1}
-              size="lg"
-              className="absolute inset-0 rounded-none border-0"
+            <CoverImage
+              src={product.images[0]?.url}
+              gradient={cover}
+              alt={product.title}
+              className="absolute inset-0 h-full w-full"
             />
             {discount && (
               <span className="absolute left-3 top-3 rounded-full bg-paper px-2.5 py-1 text-[11px] font-semibold tracking-tight text-graphite hairline">

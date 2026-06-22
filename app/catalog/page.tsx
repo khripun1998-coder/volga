@@ -112,10 +112,15 @@ export default async function CatalogPage({
       <div className="mt-7 grid gap-7 lg:grid-cols-[268px_1fr]">
         {/* Фильтры */}
         <aside className="lg:sticky lg:top-24 lg:self-start">
+          <details className="filters overflow-hidden rounded-[24px] border border-line bg-paper shadow-[var(--shadow-soft)]">
+            <summary className="flex cursor-pointer items-center justify-between gap-2 px-5 py-4 text-sm font-semibold text-graphite">
+              Фильтры
+              <ChevronDown className="h-4 w-4 text-muted" strokeWidth={1.7} />
+            </summary>
           <form
             method="get"
             action="/catalog"
-            className="space-y-5 rounded-[24px] border border-line bg-paper p-5 shadow-[var(--shadow-soft)]"
+            className="filters-body space-y-5 p-5 pt-0 md:pt-5"
           >
             <FilterGroup label="Поиск">
               <div className="relative">
@@ -218,6 +223,7 @@ export default async function CatalogPage({
               </Link>
             </div>
           </form>
+          </details>
         </aside>
 
         {/* Сетка + переключатель вида */}

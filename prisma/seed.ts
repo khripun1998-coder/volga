@@ -725,6 +725,15 @@ const CLIENT_TARGETS: Record<string, number> = {
 };
 
 async function main() {
+  // Идемпотентность: если база уже заполнена — НЕ пересеваем (реальные данные сохраняются
+  // между деплоями на постоянной БД). Полный пересев: FORCE_SEED=1 npm run db:seed
+  // (или npm run db:reset, который сначала очищает схему).
+  const seeded = await prisma.shop.count();
+  if (seeded > 0 && process.env.FORCE_SEED !== "1") {
+    console.log(`База уже заполнена (${seeded} магазинов) — пропускаю сидинг, данные сохраняются. Для пересева: FORCE_SEED=1.`);
+    return;
+  }
+
   console.log("Очистка базы…");
   await prisma.orderItem.deleteMany();
   await prisma.order.deleteMany();

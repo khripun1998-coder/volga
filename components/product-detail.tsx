@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { BadgeCheck, ChevronRight, MapPin, RotateCcw, Truck } from "lucide-react";
 import { ProductArtwork } from "@/components/product-artwork";
+import { ProductGallery } from "@/components/product-gallery";
 import { ProductPurchase } from "@/components/product-purchase";
 import { ProductCard } from "@/components/product-card";
 import { AskAboutProduct } from "@/components/ask-about-product";
@@ -126,10 +127,14 @@ export function ProductDetail({
 
       <div className={`grid gap-10 ${variant === "page" ? "mt-6" : "mt-3"} lg:grid-cols-[1.1fr_1fr]`}>
         <div className={variant === "page" ? "lg:sticky lg:top-28 lg:self-start" : ""}>
-          <ProductArtwork
-            category={product.category.slug}
-            className="aspect-square rounded-[28px] hairline"
-          />
+          {product.images.length > 0 ? (
+            <ProductGallery images={product.images} title={product.title} />
+          ) : (
+            <ProductArtwork
+              category={product.category.slug}
+              className="aspect-square rounded-[28px] hairline"
+            />
+          )}
         </div>
 
         <div>
@@ -232,7 +237,7 @@ export function ProductDetail({
 
           {/* Главный блок: всё, что нужно знать о товаре и его получении */}
           <section>
-            <p className="editorial-eyebrow">Что нужно знать</p>
+            <p className="eyebrow">Что нужно знать</p>
             <h2 className="font-display mt-2 text-2xl font-semibold text-graphite">
               О товаре и получении
             </h2>
