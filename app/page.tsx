@@ -6,17 +6,10 @@ import { Heart, Package, Search, Star, Users } from "lucide-react";
 import { Reveal } from "@/components/motion";
 import { HeroVisual } from "@/components/hero-visual";
 import { HeroDecor } from "@/components/hero-decor";
-import { getCatalog, getShops } from "@/lib/queries";
+import { getCatalog, getShops, getPlatformStats } from "@/lib/queries";
 
 type SP = { [key: string]: string | string[] | undefined };
 const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v);
-
-const STATS = [
-  { n: "1 200+", l: "мастеров", Icon: Users },
-  { n: "8 500+", l: "изделий", Icon: Package },
-  { n: "98%", l: "качество", Icon: Star },
-  { n: "24/7", l: "поддержка", Icon: Heart },
-] as const;
 
 export default async function HomePage({
   searchParams,
@@ -26,10 +19,18 @@ export default async function HomePage({
   const sp = await searchParams;
   const view = one(sp.view) === "products" ? "products" : "shops";
 
-  const [shops, products] = await Promise.all([
+  const [shops, products, stats] = await Promise.all([
     getShops(),
     getCatalog({ sort: "new" }),
+    getPlatformStats(),
   ]);
+
+  const statCards = [
+    { n: stats.shops.toLocaleString("ru-RU"), l: "магазинов", Icon: Users },
+    { n: stats.products.toLocaleString("ru-RU"), l: "изделий", Icon: Package },
+    { n: stats.avgRating.toFixed(1), l: "средний рейтинг", Icon: Star },
+    { n: stats.clients.toLocaleString("ru-RU"), l: "клиентов", Icon: Heart },
+  ];
 
   const productsSorted = [...products].sort((a, b) => {
     const ra = a.shop.rating * Math.log(1 + a.shop.ratingCount);
@@ -124,7 +125,7 @@ export default async function HomePage({
       {/* ─────────── Светлая стеклянная плашка статистики ─────────── */}
       <Reveal>
         <section className="relative z-10 mt-6 grid grid-cols-2 overflow-hidden rounded-[24px] border border-white/70 bg-gradient-to-br from-white/75 to-white/45 shadow-[inset_0_1px_0_rgba(255,255,255,0.85),var(--shadow-lift)] backdrop-blur-xl md:grid-cols-4">
-          {STATS.map(({ n, l, Icon }, i) => (
+          {statCards.map(({ n, l, Icon }, i) => (
             <div
               key={l}
               className={`flex items-center gap-4 px-6 py-7 ${

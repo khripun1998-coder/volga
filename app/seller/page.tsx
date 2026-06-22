@@ -148,6 +148,11 @@ export default async function SellerPage() {
               <StatusPill tone={prodTone(p.status)}>{productStatusLabel(p.status)}</StatusPill>
             </div>
           ))}
+          {shop.products.length === 0 && (
+            <p className="px-5 py-10 text-center text-sm text-muted">
+              У вас пока нет товаров. Добавьте первый через форму выше.
+            </p>
+          )}
         </div>
       </DashSection>
 
@@ -181,6 +186,11 @@ export default async function SellerPage() {
               </form>
             </Card>
           ))}
+          {shop.orders.length === 0 && (
+            <p className="rounded-2xl border border-dashed border-line bg-cream px-5 py-10 text-center text-sm text-muted">
+              Заказов пока нет — они появятся, когда покупатели оформят покупки.
+            </p>
+          )}
         </div>
         {shop.orders.length > recentOrders.length && (
           <p className="mt-3 text-center text-sm text-muted">

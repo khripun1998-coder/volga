@@ -4,6 +4,7 @@ import "./globals.css";
 import { SiteHeader } from "@/components/layout/site-header";
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { ChromeWrapper } from "@/components/layout/chrome-wrapper";
+import { SiteFooter } from "@/components/layout/site-footer";
 import { SmoothScroll } from "@/components/smooth-scroll";
 import { DemoBar } from "@/components/demo-bar";
 import { Toaster } from "@/components/toaster";
@@ -42,6 +43,7 @@ export default async function RootLayout({
         <ChromeWrapper
           sidebar={<AppSidebar session={session} />}
           header={<SiteHeader session={session} />}
+          footer={<SiteFooter />}
         >
           {children}
         </ChromeWrapper>

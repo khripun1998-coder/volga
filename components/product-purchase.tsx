@@ -13,11 +13,12 @@ import { cn } from "@/lib/utils";
 interface Props {
   product: Omit<CartItem, "qty" | "variant">;
   stock: number;
+  madeToOrder?: boolean;
   shopSlug: string;
   variantGroups: { kind: string; values: string[] }[];
 }
 
-export function ProductPurchase({ product, stock, shopSlug, variantGroups }: Props) {
+export function ProductPurchase({ product, stock, madeToOrder = false, shopSlug, variantGroups }: Props) {
   const add = useCart((s) => s.add);
   const router = useRouter();
   const [qty, setQty] = useState(1);
@@ -32,7 +33,9 @@ export function ProductPurchase({ product, stock, shopSlug, variantGroups }: Pro
     [variantGroups, selected]
   );
 
-  const out = stock <= 0;
+  // «Под заказ» можно оформить даже при нулевом складе.
+  const out = !madeToOrder && stock <= 0;
+  const maxQty = madeToOrder ? 99 : stock;
 
   const doAdd = () => {
     add({ ...product, variant }, qty);
@@ -86,14 +89,16 @@ export function ProductPurchase({ product, stock, shopSlug, variantGroups }: Pro
             <span className="w-10 text-center text-sm font-medium">{qty}</span>
             <button
               type="button"
-              onClick={() => setQty((q) => Math.min(stock, q + 1))}
+              onClick={() => setQty((q) => Math.min(maxQty, q + 1))}
               className="grid h-11 w-11 place-items-center text-graphite transition hover:bg-cream"
               aria-label="Увеличить"
             >
               <Plus className="h-4 w-4" />
             </button>
           </div>
-          <span className="text-sm text-muted">В наличии: {stock} шт.</span>
+          <span className="text-sm text-muted">
+            {madeToOrder ? "Изготовление под заказ" : `В наличии: ${stock} шт.`}
+          </span>
         </div>
       )}
 

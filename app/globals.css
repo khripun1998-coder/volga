@@ -171,4 +171,11 @@ html.lenis, html.lenis body { height: auto; }
 @media (prefers-reduced-motion: reduce) {
   .reveal-x, .letter-up > span { animation: none !important; opacity: 1 !important; transform: none !important; }
   .float, [class*="animate-"] { animation: none !important; }
+  /* Универсальный сброс движения (ловит и инлайн-анимации hero-декора) */
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }

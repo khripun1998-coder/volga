@@ -161,6 +161,19 @@ export async function getShopClientCount(shopId: string): Promise<number> {
   return new Set(orders.map(buyerKey)).size;
 }
 
+/** Реальные показатели площадки для плашки на главной (вместо выдуманных «1200+»). */
+export async function getPlatformStats() {
+  const [shops, products, agg, clientCounts] = await Promise.all([
+    prisma.shop.count({ where: { status: "ACTIVE" } }),
+    prisma.product.count({ where: { status: "ACTIVE" } }),
+    prisma.shop.aggregate({ where: { status: "ACTIVE" }, _avg: { rating: true } }),
+    getClientCounts(),
+  ]);
+  let clients = 0;
+  for (const n of clientCounts.values()) clients += n;
+  return { shops, products, clients, avgRating: agg._avg.rating ?? 0 };
+}
+
 /**
  * Магазины ленты — сразу с превью первых 4 товаров и числом реальных клиентов,
  * чтобы карточка-«канал» показывала «обложку + миниатюры» и честное соц-доказательство.

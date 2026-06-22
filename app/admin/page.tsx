@@ -73,6 +73,7 @@ export default async function AdminPage() {
           <Stat label="Оборот" value={formatPrice(kpi.revenue)} hint="по всем заказам" />
           <Stat label="Заказы" value={kpi.orders} />
           <Stat label="Магазины" value={kpi.shops} />
+          <Stat label="Активные товары" value={kpi.activeProducts} />
           <Stat label="Пользователи" value={kpi.users} />
           <Stat label="На модерации" value={kpi.pending} hint="товаров в очереди" />
           <Stat label="Открытые споры" value={kpi.openDisputes} />

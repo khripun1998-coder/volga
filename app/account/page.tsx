@@ -51,6 +51,14 @@ export default async function AccountPage() {
   return (
     <DashShell title="Кабинет покупателя" role={`Покупатель · ${buyerName}`} nav={nav}>
       <DashSection id="orders" title={`Заказы (${orders.length})`}>
+        {orders.length === 0 && (
+          <p className="rounded-2xl border border-dashed border-line bg-cream px-5 py-10 text-center text-sm text-muted">
+            У вас пока нет заказов.{" "}
+            <Link href="/catalog" className="font-medium text-accent">
+              Перейти в каталог →
+            </Link>
+          </p>
+        )}
         <div className="space-y-4">
           {orders.map((o) => (
             <Card key={o.id} className="p-5">
@@ -113,6 +121,11 @@ export default async function AccountPage() {
       </DashSection>
 
       <DashSection id="reviews" title="Мои отзывы">
+        {reviews.length === 0 && (
+          <p className="rounded-2xl border border-dashed border-line bg-cream px-5 py-10 text-center text-sm text-muted">
+            Здесь появятся ваши отзывы после покупок.
+          </p>
+        )}
         <div className="space-y-4">
           {reviews.map((r) => (
             <Card key={r.id} className="p-5">

@@ -14,16 +14,15 @@ const columns = [
     title: "Продавцам",
     links: [
       { href: "/seller", label: "Открыть магазин" },
-      { href: "/seller#tariffs", label: "Тарифы" },
       { href: "/login", label: "Кабинет продавца" },
     ],
   },
   {
     title: "Площадка",
     links: [
-      { href: "/", label: "О Волге" },
-      { href: "/", label: "Доставка и оплата" },
-      { href: "/", label: "Возврат и гарантии" },
+      { href: "/about", label: "О Волге" },
+      { href: "/delivery", label: "Доставка и оплата" },
+      { href: "/returns", label: "Возврат и гарантии" },
     ],
   },
 ];

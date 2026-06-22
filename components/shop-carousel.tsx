@@ -72,6 +72,9 @@ export function ShopCarousel({ shops }: { shops: FeedShop[] }) {
   // клавиши ← →
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      // Не перехватываем стрелки, когда пользователь печатает (поиск/поля ввода)
+      const el = document.activeElement as HTMLElement | null;
+      if (el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable)) return;
       if (e.key === "ArrowLeft") go(-1);
       if (e.key === "ArrowRight") go(1);
     };
@@ -85,6 +88,15 @@ export function ShopCarousel({ shops }: { shops: FeedShop[] }) {
     if (i === active) router.push(`/shop/${slug}`);
     else setActive(i);
   };
+
+  if (shops.length === 0) {
+    return (
+      <div className="rounded-3xl border border-dashed border-line bg-cream py-16 text-center">
+        <p className="font-display text-lg font-semibold text-graphite">Магазины скоро появятся</p>
+        <p className="mt-1 text-sm text-muted">Мастера готовят свои витрины.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="relative">
@@ -163,11 +175,13 @@ export function ShopCarousel({ shops }: { shops: FeedShop[] }) {
         ))}
       </div>
 
-      {/* Подсказка */}
-      <p className="mt-4 flex items-center justify-center gap-2 text-[13px] text-muted">
-        <Hand className="h-4 w-4" strokeWidth={1.7} />
-        Листайте влево или вправо, чтобы увидеть больше
-      </p>
+      {/* Подсказка — только если есть что листать */}
+      {shops.length > 1 && (
+        <p className="mt-4 flex items-center justify-center gap-2 text-[13px] text-muted">
+          <Hand className="h-4 w-4" strokeWidth={1.7} />
+          Листайте влево или вправо, чтобы увидеть больше
+        </p>
+      )}
 
       {/* Кнопка */}
       <div className="mt-6 flex justify-center">
@@ -216,7 +230,7 @@ function Slide({
         <span className="absolute left-4 top-4 rounded-full bg-paper px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-accent shadow-[var(--shadow-soft)]">
           ТОП {rank}
         </span>
-        <span className="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full bg-paper text-graphite/70 shadow-[var(--shadow-soft)]">
+        <span aria-hidden className="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full bg-paper text-graphite/70 shadow-[var(--shadow-soft)]">
           <Heart className="h-4 w-4" strokeWidth={1.8} />
         </span>
       </div>

@@ -73,8 +73,20 @@ export default async function CatalogPage({
 
   return (
     <div className="container-page py-6">
-      {/* Категории-чипсы */}
-      <CategoryNav categories={facets.categories} active={filters.category} />
+      {/* Категории-чипсы (клик сохраняет остальные фильтры) */}
+      <CategoryNav
+        categories={facets.categories}
+        active={filters.category}
+        params={{
+          q: filters.q,
+          tag: filters.tag,
+          city: filters.city,
+          min: filters.min != null ? String(filters.min) : undefined,
+          max: filters.max != null ? String(filters.max) : undefined,
+          inStock: filters.inStock ? "1" : undefined,
+          sort: filters.sort,
+        }}
+      />
 
       {/* Заголовок + стеклянный промо-баннер */}
       <div className="mt-6 grid items-center gap-5 lg:grid-cols-[1fr_1.15fr]">

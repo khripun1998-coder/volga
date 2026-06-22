@@ -199,6 +199,7 @@ export function ProductDetail({
                 shopName: product.shop.name,
               }}
               stock={product.stock}
+              madeToOrder={product.madeToOrder}
               shopSlug={product.shop.slug}
               variantGroups={variantGroups}
             />

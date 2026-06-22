@@ -80,8 +80,10 @@ export async function getAdminDashboard() {
 }
 
 export async function getModerationQueue() {
+  // Только товары, ожидающие проверки. Отклонённые уходят из очереди
+  // (иначе повторное «Отклонить» — пустое действие, а счётчик завышен).
   return prisma.product.findMany({
-    where: { status: { in: ["PENDING", "REJECTED"] } },
+    where: { status: "PENDING" },
     include: { shop: true, category: true },
     orderBy: { createdAt: "desc" },
   });
