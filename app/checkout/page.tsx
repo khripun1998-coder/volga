@@ -86,27 +86,31 @@ export default function CheckoutPage() {
     e.preventDefault();
     setError(null);
     setSubmitting(true);
-    const res = await createOrder({
-      items: items.map((i) => ({
-        productId: i.productId,
-        qty: i.qty,
-        variant: i.variant,
-      })),
-      name,
-      phone,
-      receive,
-      address,
-      deliveryMethod,
-      payment,
-      comment,
-    });
-    if (res.ok) {
-      clear();
-      router.push(`/checkout/success?order=${encodeURIComponent(res.number)}`);
-    } else {
+    try {
+      const res = await createOrder({
+        items: items.map((i) => ({
+          productId: i.productId,
+          qty: i.qty,
+          variant: i.variant,
+        })),
+        name,
+        phone,
+        receive,
+        address,
+        deliveryMethod,
+        payment,
+        comment,
+      });
+      if (res.ok) {
+        clear();
+        router.push(`/checkout/success?order=${encodeURIComponent(res.number)}`);
+        return; // не снимаем «Оформляем…» — уходим на страницу успеха
+      }
       setError(res.error);
-      setSubmitting(false);
+    } catch {
+      setError("Не удалось оформить заказ. Проверьте соединение и попробуйте ещё раз.");
     }
+    setSubmitting(false);
   }
 
   return (
