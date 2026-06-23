@@ -27,6 +27,7 @@ export default async function ShopLayout({
         theme={theme}
         productsCount={shop.products.length}
         clients={clients}
+        founderName={shop.owner?.name ?? null}
       />
       <div className="container-page">
         <ChannelTabs slug={shop.slug} />

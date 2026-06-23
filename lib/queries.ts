@@ -230,6 +230,7 @@ export async function getShopBySlug(slug: string) {
   return prisma.shop.findUnique({
     where: { slug },
     include: {
+      owner: { select: { name: true } },
       products: {
         where: { status: "ACTIVE" },
         include: cardInclude,

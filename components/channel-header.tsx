@@ -30,11 +30,13 @@ export function ChannelHeader({
   theme,
   productsCount,
   clients,
+  founderName,
 }: {
   shop: ChannelShop;
   theme: ShopTheme;
   productsCount: number;
   clients: number;
+  founderName?: string | null;
 }) {
   return (
     <header style={themeVars(theme)}>
@@ -97,6 +99,20 @@ export function ChannelHeader({
                 />
               )}
             </div>
+
+            {founderName && (
+              <div className="mt-2.5 inline-flex items-center gap-2 text-[14px] text-muted">
+                <span
+                  className="grid h-6 w-6 place-items-center rounded-full text-[11px] font-semibold text-white"
+                  style={{ background: "var(--accent)" }}
+                >
+                  {founderName.charAt(0)}
+                </span>
+                <span>
+                  Мастер · <span className="font-medium text-graphite">{founderName}</span>
+                </span>
+              </div>
+            )}
 
             <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-[14px] text-muted">
               <span className="font-medium text-graphite">@{shop.slug}</span>

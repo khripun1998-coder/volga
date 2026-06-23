@@ -34,6 +34,9 @@ model Shop {
   exportInfo   String?
   avatarUrl    String?
   coverUrl     String?
+  founderPhotoUrl String?            // фото мастера (когда пришлёт клиент)
+  story          String?            // личная история мастера (отдельно от короткого description)
+  craftSince     Int?               // год начала ремесла
   rating       Float     @default(0)
   ratingCount  Int       @default(0)
   verified     Boolean   @default(false)
