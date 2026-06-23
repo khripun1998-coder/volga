@@ -68,7 +68,7 @@ function MilestoneCard({ clients }: { clients: number }) {
               : ещё {(next - clients).toLocaleString("ru-RU")}
             </>
           ) : (
-            <>Веха 10 000+ достигнута 🎉</>
+            <>Веха 10 000+ достигнута</>
           )}
         </div>
       </div>

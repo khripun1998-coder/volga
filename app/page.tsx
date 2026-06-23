@@ -5,7 +5,6 @@ import { FeedTabs } from "@/components/feed-tabs";
 import { Heart, Package, Search, Star, Users } from "lucide-react";
 import { Reveal } from "@/components/motion";
 import { HeroVisual } from "@/components/hero-visual";
-import { HeroDecor } from "@/components/hero-decor";
 import { getCatalog, getShops, getPlatformStats } from "@/lib/queries";
 
 type SP = { [key: string]: string | string[] | undefined };
@@ -50,9 +49,6 @@ export default async function HomePage({
           <HeroVisual />
         </div>
 
-        {/* Декор: пуговицы, бусины, искры */}
-        <HeroDecor />
-
         <div className="relative grid items-center gap-6 p-7 md:grid-cols-[1.15fr_0.85fr] md:p-12">
           <Reveal className="relative z-20">
             <p className="eyebrow" style={{ color: "var(--color-accent)" }}>
@@ -91,14 +87,6 @@ export default async function HomePage({
       {/* ─────────── Центральный поиск (над плашкой) ─────────── */}
       <Reveal>
         <div className="relative mx-auto mt-8 max-w-2xl">
-          {/* Вязаное сердечко у лупы поиска (отзеркалено) */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/heart.png"
-            alt=""
-            aria-hidden
-            className="pointer-events-none absolute left-[-78px] top-1/2 hidden h-24 w-24 -translate-y-1/2 -scale-x-100 rotate-12 object-contain drop-shadow-[0_14px_20px_rgba(120,90,140,0.26)] lg:left-[-104px] lg:block lg:h-28 lg:w-28"
-          />
           <form
             action="/catalog"
             method="get"
@@ -160,7 +148,7 @@ export default async function HomePage({
             </h3>
             <p className="mt-1.5 text-[14px] text-muted">
               {view === "shops"
-                ? "Лучшие магазины недели, выбранные с любовью ✨"
+                ? "Лучшие магазины недели по оценкам покупателей"
                 : "Изделия от мастеров с самым высоким рейтингом"}
             </p>
           </div>

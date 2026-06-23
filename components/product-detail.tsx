@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { BadgeCheck, ChevronRight, MapPin, RotateCcw, Truck } from "lucide-react";
+import { BadgeCheck, ChevronRight, MapPin, RotateCcw, ShieldCheck, Truck } from "lucide-react";
 import { ProductArtwork } from "@/components/product-artwork";
 import { ProductGallery } from "@/components/product-gallery";
 import { ProductPurchase } from "@/components/product-purchase";
@@ -156,7 +156,7 @@ export function ProductDetail({
             </span>
           </Link>
 
-          <h1 className="font-display mt-5 text-3xl font-semibold leading-tight text-graphite md:text-[34px]">
+          <h1 className="font-serif mt-5 text-[28px] leading-tight text-graphite md:text-[36px]">
             {product.title}
           </h1>
 
@@ -212,6 +212,24 @@ export function ProductDetail({
               productTitle={product.title}
               accent={theme.accent}
             />
+          </div>
+
+          {/* Сигналы доверия — данные эскроу/возврата/верификации уже есть */}
+          <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-[12.5px] text-muted">
+            <span className="inline-flex items-center gap-1.5">
+              <ShieldCheck className="h-4 w-4 text-accent" strokeWidth={1.6} />
+              Деньги мастеру после получения
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <RotateCcw className="h-4 w-4 text-accent" strokeWidth={1.6} />
+              Возврат 7 дней
+            </span>
+            {product.shop.verified && (
+              <span className="inline-flex items-center gap-1.5">
+                <BadgeCheck className="h-4 w-4 text-accent" strokeWidth={1.6} />
+                Проверенный мастер
+              </span>
+            )}
           </div>
 
           <div className="mt-8 grid gap-3 rounded-2xl p-5 text-sm sm:grid-cols-2" style={{ background: "var(--surface-muted, #faf8f4)" }}>

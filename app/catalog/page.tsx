@@ -106,7 +106,7 @@ export default async function CatalogPage({
               <Sparkles className="h-5 w-5" strokeWidth={1.8} />
             </span>
             <p className="max-w-[42ch] text-[14.5px] leading-relaxed text-graphite/90">
-              Поддерживайте мастеров и находите уникальные вещи, сделанные с душой.
+              Изделия ручной работы от мастеров России — каждое существует в одном экземпляре.
             </p>
           </div>
           {/* мягкий декор */}

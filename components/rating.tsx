@@ -12,7 +12,7 @@ export function Rating({
 }) {
   return (
     <span className={cn("inline-flex items-center gap-1 text-sm", className)}>
-      <Star className="h-4 w-4 fill-graphite text-graphite" strokeWidth={0} />
+      <Star className="h-4 w-4 fill-gold text-gold" strokeWidth={0} />
       <span className="font-medium text-graphite">{value.toFixed(1)}</span>
       {count != null && <span className="text-muted">· {count} отз.</span>}
     </span>
@@ -28,7 +28,7 @@ export function Stars({ value, className }: { value: number; className?: string 
           className={cn(
             "h-4 w-4",
             i <= Math.round(value)
-              ? "fill-graphite text-graphite"
+              ? "fill-gold text-gold"
               : "fill-line text-line"
           )}
           strokeWidth={0}

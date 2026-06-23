@@ -1,6 +1,7 @@
 import Image from "next/image";
-import { BadgeCheck, MapPin, MessageCircle, Share2, UserCheck } from "lucide-react";
+import { BadgeCheck, MapPin, MessageCircle, UserCheck } from "lucide-react";
 import { themeVars, type ShopTheme } from "@/lib/shop-theme";
+import { ShareButton } from "@/components/share-button";
 import { pluralize } from "@/lib/utils";
 
 const kindLabel: Record<string, string> = {
@@ -152,13 +153,7 @@ export function ChannelHeader({
               <MessageCircle className="h-4 w-4" strokeWidth={1.8} />
               Написать
             </a>
-            <button
-              type="button"
-              aria-label="Поделиться"
-              className="grid h-11 w-11 place-items-center rounded-full border border-line bg-paper text-graphite transition hover:bg-cream"
-            >
-              <Share2 className="h-4 w-4" strokeWidth={1.7} />
-            </button>
+            <ShareButton title={shop.name} />
           </div>
         </div>
       </div>

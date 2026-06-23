@@ -253,7 +253,7 @@ function Slide({
 
         <div className="mt-4 flex items-center justify-between border-t border-line pt-3 text-[13px]">
           <span className="inline-flex items-center gap-1.5 font-semibold text-graphite">
-            <Star className="h-3.5 w-3.5 text-accent" fill="currentColor" strokeWidth={0} />
+            <Star className="h-3.5 w-3.5 text-gold" fill="currentColor" strokeWidth={0} />
             {shop.rating.toFixed(1)}
             <span className="font-normal text-muted">({shop.ratingCount})</span>
           </span>

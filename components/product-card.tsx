@@ -58,7 +58,7 @@ export function ProductCard({
         <Link
           href={`/product/${product.slug}`}
           prefetch
-          className="tilt flex items-center gap-4 overflow-hidden rounded-[20px] bg-paper p-3 pr-12 hairline"
+          className="tilt flex items-center gap-4 overflow-hidden rounded-[20px] bg-paper p-3 pr-12 hairline shadow-[var(--shadow-soft)]"
           aria-label={`${product.title} — ${product.shop.name}`}
         >
           <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-2xl sm:h-28 sm:w-28">
@@ -95,7 +95,7 @@ export function ProductCard({
                 </span>
               )}
               <span className="inline-flex items-center gap-1 text-[12px] text-muted">
-                <Star className="h-3.5 w-3.5 text-accent" fill="currentColor" strokeWidth={0} />
+                <Star className="h-3.5 w-3.5 text-gold" fill="currentColor" strokeWidth={0} />
                 <span className="font-medium text-graphite">{product.shop.rating.toFixed(1)}</span>
                 <span>({product.shop.ratingCount})</span>
               </span>
@@ -118,7 +118,7 @@ export function ProductCard({
         className="block"
         aria-label={`${product.title} — ${product.shop.name}`}
       >
-        <div className="tilt overflow-hidden rounded-[24px] bg-paper hairline">
+        <div className="tilt overflow-hidden rounded-[24px] bg-paper hairline shadow-[var(--shadow-soft)]">
           <div className="relative aspect-square">
             <CoverImage
               src={product.images[0]?.url}
@@ -160,7 +160,7 @@ export function ProductCard({
               </div>
               {showRating && (
                 <span className="inline-flex shrink-0 items-center gap-1 text-[12px] text-muted">
-                  <Star className="h-3.5 w-3.5 text-accent" fill="currentColor" strokeWidth={0} />
+                  <Star className="h-3.5 w-3.5 text-gold" fill="currentColor" strokeWidth={0} />
                   <span className="font-medium text-graphite">{product.shop.rating.toFixed(1)}</span>
                   <span>({product.shop.ratingCount})</span>
                 </span>

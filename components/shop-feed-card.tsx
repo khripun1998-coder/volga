@@ -61,7 +61,7 @@ export function ShopFeedCard({
       <Link
         href={`/shop/${shop.slug}`}
         className={cn(
-          "tilt group flex items-center gap-4 overflow-hidden rounded-3xl bg-paper p-3 hairline",
+          "tilt group flex items-center gap-4 overflow-hidden rounded-3xl bg-paper p-3 hairline shadow-[var(--shadow-soft)]",
           className
         )}
       >
@@ -95,7 +95,7 @@ export function ShopFeedCard({
             {shop.description || kindLabel[shop.kind] || "Магазин мастера"}
           </p>
           <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12.5px]">
-            <Star className="h-3.5 w-3.5 text-accent" fill="currentColor" strokeWidth={0} />
+            <Star className="h-3.5 w-3.5 text-gold" fill="currentColor" strokeWidth={0} />
             <span className="font-semibold text-graphite">{shop.rating.toFixed(1)}</span>
             <span className="text-muted">({shop.ratingCount})</span>
             <span className="text-muted/50">·</span>
@@ -122,7 +122,7 @@ export function ShopFeedCard({
     <Link
       href={`/shop/${shop.slug}`}
       className={cn(
-        "tilt group block overflow-hidden rounded-3xl bg-paper hairline",
+        "tilt group block overflow-hidden rounded-3xl bg-paper hairline shadow-[var(--shadow-soft)]",
         className
       )}
     >
@@ -166,7 +166,7 @@ export function ShopFeedCard({
         </p>
 
         <div className="mt-3.5 flex items-center gap-2 border-t border-line pt-3.5 text-[13px]">
-          <Star className="h-4 w-4 text-accent" fill="currentColor" strokeWidth={0} />
+          <Star className="h-4 w-4 text-gold" fill="currentColor" strokeWidth={0} />
           <span className="font-semibold text-graphite">{shop.rating.toFixed(1)}</span>
           <span className="text-muted">({shop.ratingCount})</span>
           <span className="text-muted/50">·</span>

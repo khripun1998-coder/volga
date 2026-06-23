@@ -24,6 +24,7 @@
   /* Доп. */
   --color-verified: #4a7c59;
   --color-sage: #4a7c59;
+  --color-gold: #e0a93b;         /* звёзды рейтинга — тёплый янтарь (не фиолетовый) */
 
   /* Тёмная плашка статистики */
   --color-ink-dark: #14152a;
@@ -83,12 +84,12 @@ body {
   color: var(--color-muted);
 }
 
-/* Имя магазина в шапке-канале */
+/* Имя магазина в шапке-канале — серифный «голос авторства» (Playfair) */
 .channel-title {
-  font-family: var(--font-display);
-  font-weight: 800;
-  letter-spacing: -0.025em;
-  line-height: 1.05;
+  font-family: var(--font-serif);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.08;
   font-size: clamp(28px, 6vw, 44px);
 }
 
