@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Search, SlidersHorizontal, User } from "lucide-react";
 import { NotificationBell } from "@/components/notification-bell";
+import { CartButton } from "@/components/cart-button";
 import { logout } from "@/app/login/actions";
 import { cn } from "@/lib/utils";
 
@@ -49,6 +50,7 @@ export function SiteHeader({ session }: { session: Session }) {
       <div className="flex h-[72px] items-center gap-4 px-5 md:px-8">
         <SearchForm className="hidden md:block" />
         <div className="ml-auto flex items-center gap-2">
+          <CartButton />
           <NotificationBell />
           {session ? (
             <form action={logout}>

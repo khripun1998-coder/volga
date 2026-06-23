@@ -6,12 +6,13 @@ import { useEffect, useState } from "react";
 import {
   ArrowRight,
   Heart,
+  Home,
   type LucideIcon,
   MessageCircle,
   PanelLeftClose,
   PanelLeftOpen,
-  SlidersHorizontal,
-  Settings,
+  Search,
+  Store,
   User,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -131,21 +132,20 @@ export function AppSidebar({ session }: { session: Session }) {
     return pathname.startsWith(href.split("#")[0]);
   };
 
+  const roleHome = session
+    ? session.role === "SELLER"
+      ? "/seller"
+      : session.role === "ADMIN"
+        ? "/admin"
+        : "/account"
+    : "/login";
+  // Навигация площадки (по направлению клиента: сайдбар + лента/магазины), затем личное.
   const items: Item[] = [
-    {
-      href: session
-        ? session.role === "SELLER"
-          ? "/seller"
-          : session.role === "ADMIN"
-            ? "/admin"
-            : "/account"
-        : "/login",
-      label: "Профиль",
-      icon: User,
-    },
-    { href: "/account#messages", label: "Сообщения", icon: MessageCircle, badge: 3 },
-    { href: "/account#profile", label: "Настройки", icon: Settings },
-    { href: "/catalog", label: "Фильтры поиска", icon: SlidersHorizontal },
+    { href: "/", label: "Лента", icon: Home },
+    { href: "/shops", label: "Магазины", icon: Store },
+    { href: "/catalog", label: "Каталог", icon: Search },
+    { href: roleHome, label: "Профиль", icon: User },
+    { href: "/account#messages", label: "Сообщения", icon: MessageCircle },
   ];
 
   return (
