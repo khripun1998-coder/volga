@@ -47,7 +47,7 @@ type ProductSeed = {
   materialSources?: { name: string; origin?: string; supplierSlug?: string; supplierName?: string }[];
   featured?: boolean;
   variants?: { kind: string; value: string }[];
-  reviews?: { rating: number; text: string; authorName: string }[];
+  reviews?: { rating: number; text: string; authorName: string; verified?: boolean; sellerReply?: string }[];
 };
 
 type ShopSeed = {
@@ -110,7 +110,7 @@ const shops: ShopSeed[] = [
           { kind: "Цвет", value: "Серый" },
         ],
         reviews: [
-          { rating: 5, text: "Мишка чудесный, дочка не расстаётся. Качество вязки на высоте!", authorName: "Анна" },
+          { rating: 5, text: "Мишка чудесный, дочка не расстаётся. Качество вязки на высоте!", authorName: "Анна", sellerReply: "Спасибо, Анна! Рада, что Топтыжка нашёл свой дом — вязала его с особой любовью." },
           { rating: 5, text: "Заказывала в подарок — упаковано бережно, выглядит дороже своей цены.", authorName: "Ирина" },
           { rating: 4, text: "Очень милый, чуть меньше чем ожидала, но это мелочь.", authorName: "Светлана" },
         ],
@@ -207,7 +207,7 @@ const shops: ShopSeed[] = [
           { kind: "Глазурь", value: "Песочная" },
         ],
         reviews: [
-          { rating: 5, text: "Держит тепло, приятно в руке. Беру вторую.", authorName: "Дмитрий" },
+          { rating: 5, text: "Держит тепло, приятно в руке. Беру вторую.", authorName: "Дмитрий", sellerReply: "Благодарю! Вторую подберу из той же партии обжига, чтобы оттенок совпал." },
           { rating: 5, text: "Цвет глазури вживую ещё красивее.", authorName: "Мария" },
         ],
       },
@@ -848,7 +848,7 @@ async function main() {
           categoryId: catId(p.category),
           images: { create: imagesFor(p.slug, p.title) },
           variants: { create: p.variants ?? [] },
-          reviews: { create: p.reviews ?? [] },
+          reviews: { create: (p.reviews ?? []).map((r) => ({ ...r, verified: r.verified ?? true })) },
           materialSources: {
             create: (p.materialSources ?? []).map((m, i) => ({ ...m, position: i })),
           },

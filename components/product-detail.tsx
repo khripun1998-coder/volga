@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { BadgeCheck, ChevronRight, MapPin, RotateCcw, ShieldCheck, Truck } from "lucide-react";
+import { BadgeCheck, ChevronRight, MapPin, RotateCcw, ShieldCheck, Star, Truck } from "lucide-react";
 import { ProductArtwork } from "@/components/product-artwork";
 import { ProductGallery } from "@/components/product-gallery";
 import { ProductPurchase } from "@/components/product-purchase";
@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Rating, Stars } from "@/components/rating";
 import { getShopTheme, themeVars } from "@/lib/shop-theme";
 import { addReview } from "@/app/product/[slug]/actions";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, pluralize } from "@/lib/utils";
 import type { Prisma } from "@prisma/client";
 
 const dateFmt = new Intl.DateTimeFormat("ru-RU", {
@@ -67,6 +67,11 @@ export function ProductDetail({
   const reviewAvg = product.reviews.length
     ? product.reviews.reduce((s, r) => s + r.rating, 0) / product.reviews.length
     : null;
+
+  const reviewDist = [5, 4, 3, 2, 1].map((star) => ({
+    star,
+    count: product.reviews.filter((r) => r.rating === star).length,
+  }));
 
   /**
    * 7 пунктов, заданных клиентом дословно (см. ТЗ §4.4):
@@ -351,18 +356,72 @@ export function ProductDetail({
                 Пока нет отзывов. Станьте первым после покупки.
               </p>
             ) : (
-              <ul className="mt-5 space-y-5">
-                {product.reviews.map((r) => (
-                  <li key={r.id} className="rounded-2xl hairline p-5">
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium text-graphite">{r.authorName}</span>
-                      <span className="text-xs text-muted">{dateFmt.format(r.createdAt)}</span>
+              <>
+                {reviewAvg != null && (
+                  <div className="mt-5 flex flex-col gap-6 rounded-2xl hairline p-5 sm:flex-row sm:items-center">
+                    <div className="text-center sm:w-44 sm:shrink-0">
+                      <div className="font-display text-5xl font-semibold text-graphite">
+                        {reviewAvg.toFixed(1)}
+                      </div>
+                      <Stars value={reviewAvg} className="mt-2 justify-center" />
+                      <div className="mt-1.5 text-xs text-muted">
+                        {product.reviews.length}{" "}
+                        {pluralize(product.reviews.length, ["отзыв", "отзыва", "отзывов"])}
+                      </div>
                     </div>
-                    <Stars value={r.rating} className="mt-2" />
-                    <p className="mt-2.5 leading-relaxed text-graphite/90">{r.text}</p>
-                  </li>
-                ))}
-              </ul>
+                    <div className="flex-1 space-y-1.5">
+                      {reviewDist.map(({ star, count }) => (
+                        <div key={star} className="flex items-center gap-2 text-xs text-muted">
+                          <span className="w-2.5 text-right text-graphite">{star}</span>
+                          <Star className="h-3 w-3 text-gold" fill="currentColor" strokeWidth={0} />
+                          <span className="h-2 flex-1 overflow-hidden rounded-full bg-cream">
+                            <span
+                              className="block h-full rounded-full bg-gold"
+                              style={{ width: `${(count / product.reviews.length) * 100}%` }}
+                            />
+                          </span>
+                          <span className="w-6 text-right tabular-nums">{count}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                <ul className="mt-5 space-y-5">
+                  {product.reviews.map((r) => (
+                    <li key={r.id} className="rounded-2xl hairline p-5">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <span className="inline-flex items-center gap-2">
+                          <span className="font-medium text-graphite">{r.authorName}</span>
+                          {r.verified && (
+                            <span className="inline-flex items-center gap-1 rounded-full bg-sage/10 px-2 py-0.5 text-[11px] font-medium text-sage">
+                              <BadgeCheck className="h-3 w-3" strokeWidth={2} /> Проверенная покупка
+                            </span>
+                          )}
+                        </span>
+                        <span className="text-xs text-muted">{dateFmt.format(r.createdAt)}</span>
+                      </div>
+                      <Stars value={r.rating} className="mt-2" />
+                      <p className="mt-2.5 leading-relaxed text-graphite/90">{r.text}</p>
+                      {r.sellerReply && (
+                        <div className="mt-3 rounded-xl bg-cream/70 p-3.5">
+                          <div className="flex items-center gap-1.5 text-xs font-medium text-graphite">
+                            <span
+                              className="grid h-5 w-5 place-items-center rounded-full text-[10px] font-semibold text-white"
+                              style={{ background: theme.accent }}
+                            >
+                              {product.shop.name.charAt(0)}
+                            </span>
+                            Ответ магазина «{product.shop.name}»
+                          </div>
+                          <p className="mt-1.5 text-sm leading-relaxed text-graphite/90">
+                            {r.sellerReply}
+                          </p>
+                        </div>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </>
             )}
 
             {variant === "page" && (
