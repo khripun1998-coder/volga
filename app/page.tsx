@@ -1,11 +1,13 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ShopCarousel } from "@/components/shop-carousel";
 import { ProductsView } from "@/components/products-view";
 import { FeedTabs } from "@/components/feed-tabs";
 import { Heart, Package, Search, Star, Users } from "lucide-react";
 import { Reveal } from "@/components/motion";
 import { HeroVisual } from "@/components/hero-visual";
-import { getCatalog, getShops, getPlatformStats } from "@/lib/queries";
+import { getCatalog, getShops, getPlatformStats, getFeaturedMaster } from "@/lib/queries";
+import { formatPrice } from "@/lib/utils";
 
 type SP = { [key: string]: string | string[] | undefined };
 const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v);
@@ -18,10 +20,11 @@ export default async function HomePage({
   const sp = await searchParams;
   const view = one(sp.view) === "products" ? "products" : "shops";
 
-  const [shops, products, stats] = await Promise.all([
+  const [shops, products, stats, master] = await Promise.all([
     getShops(),
     getCatalog({ sort: "new" }),
     getPlatformStats(),
+    getFeaturedMaster(),
   ]);
 
   const statCards = [
@@ -163,6 +166,65 @@ export default async function HomePage({
           </div>
         )}
       </section>
+
+      {/* ─────────── МАСТЕР НЕДЕЛИ (редакторский блок) ─────────── */}
+      {master && (
+        <section className="mt-16">
+          <div className="grid overflow-hidden rounded-[28px] bg-paper hairline shadow-[var(--shadow-soft)] md:grid-cols-[1fr_1.05fr]">
+            <div className="flex flex-col justify-center gap-5 bg-cream p-8 md:p-10">
+              <p className="eyebrow" style={{ color: "var(--color-accent)" }}>
+                Мастер недели
+              </p>
+              <div className="flex items-center gap-3.5">
+                <span className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-accent-soft font-serif text-2xl font-semibold text-accent">
+                  {(master.owner?.name ?? master.name).charAt(0)}
+                </span>
+                <div>
+                  <div className="font-serif text-2xl leading-tight text-graphite">
+                    {master.owner?.name ?? master.name}
+                  </div>
+                  <div className="mt-0.5 text-sm text-muted">
+                    {master.name}
+                    {master.craftSince ? ` · в ремесле с ${master.craftSince}` : ""}
+                  </div>
+                </div>
+              </div>
+              {master.story && (
+                <p className="line-clamp-4 text-[15px] leading-relaxed text-graphite/90">
+                  {master.story}
+                </p>
+              )}
+              <Link
+                href={`/shop/${master.slug}`}
+                className="btn-accent inline-flex h-11 w-fit items-center rounded-full bg-accent px-6 text-[14px] font-semibold text-white transition"
+              >
+                Открыть магазин
+              </Link>
+            </div>
+            <div className="grid grid-cols-3 gap-2.5 p-4 md:gap-3 md:p-5">
+              {master.products.map((p) => (
+                <Link key={p.id} href={`/product/${p.slug}`} className="group block">
+                  <div className="relative aspect-square overflow-hidden rounded-xl bg-cream">
+                    {p.images[0] && (
+                      <Image
+                        src={p.images[0].url}
+                        alt={p.title}
+                        fill
+                        sizes="160px"
+                        className="object-cover transition duration-500 group-hover:scale-105"
+                      />
+                    )}
+                  </div>
+                  <div className="mt-2 truncate text-[12.5px] font-medium text-graphite">
+                    {p.title}
+                  </div>
+                  <div className="text-[12.5px] text-muted">{formatPrice(p.price)}</div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   );
 }

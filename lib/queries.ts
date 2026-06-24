@@ -240,6 +240,24 @@ export async function getShopBySlug(slug: string) {
   });
 }
 
+/** «Мастер недели» для редакторского блока на главной: магазин с историей + 3 работы. */
+export async function getFeaturedMaster() {
+  return prisma.shop.findFirst({
+    where: { status: "ACTIVE", story: { not: null } },
+    // Популярность важнее доли: «мастер недели» — с историей и витриной из нескольких работ.
+    orderBy: [{ promoted: "desc" }, { ratingCount: "desc" }, { rating: "desc" }],
+    include: {
+      owner: { select: { name: true } },
+      products: {
+        where: { status: "ACTIVE" },
+        include: cardInclude,
+        orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
+        take: 3,
+      },
+    },
+  });
+}
+
 /** Записи журнала мастера (посты канала), новые сверху. */
 export async function getShopPosts(shopId: string, take?: number) {
   return prisma.post.findMany({
