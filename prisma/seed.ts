@@ -929,6 +929,15 @@ async function main() {
   }
 
   const oShipped = await makeOrder({ shop: teplye, status: "SHIPPED", escrow: "HELD", tracking: "CDEK1234567890", delivery: "СДЭК", payment: "Перевод на карту", daysAgo: 3, items: [{ slug: "myagkiy-mishka-toptyzhka", qty: 1, variant: "Цвет: Молочный" }] });
+  // демо-подарок — чтобы кабинет продавца показывал подарочную заявку
+  await prisma.order.update({
+    where: { id: oShipped.id },
+    data: {
+      giftWrap: true,
+      giftMessage: "С днём рождения! Пусть Топтыжка приносит радость.",
+      hidePrice: true,
+    },
+  });
   await makeOrder({ shop: teplye, status: "PROCESSING", escrow: "HELD", delivery: "Почта России", payment: "При получении", daysAgo: 1, items: [{ slug: "zayka-sonya-amigurumi", qty: 2, variant: "Цвет: Пудровый" }] });
   const oDelivered = await makeOrder({ shop: teplye, status: "DELIVERED", escrow: "HELD", tracking: "CDEK9876543210", delivery: "СДЭК", payment: "Перевод на карту", daysAgo: 7, items: [{ slug: "slonenok-timka", qty: 1 }] });
   await makeOrder({ shop: teplye, status: "COMPLETED", escrow: "RELEASED", tracking: "RU555123456", delivery: "Почта России", payment: "При получении", daysAgo: 20, items: [{ slug: "nabor-zveryata-3", qty: 1 }] });

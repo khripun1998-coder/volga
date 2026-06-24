@@ -61,6 +61,9 @@ export default function CheckoutPage() {
   const [deliveryMethod, setDeliveryMethod] = useState(deliveryMethods[0]);
   const [payment, setPayment] = useState(paymentMethods[0]);
   const [comment, setComment] = useState("");
+  const [gift, setGift] = useState(false);
+  const [giftMessage, setGiftMessage] = useState("");
+  const [hidePrice, setHidePrice] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -100,6 +103,9 @@ export default function CheckoutPage() {
         deliveryMethod,
         payment,
         comment,
+        giftWrap: gift,
+        giftMessage,
+        hidePrice,
       });
       if (res.ok) {
         clear();
@@ -219,6 +225,47 @@ export default function CheckoutPage() {
               value={comment}
               onChange={(e) => setComment(e.target.value)}
             />
+          </section>
+
+          {/* В подарок */}
+          <section>
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-muted">
+              В подарок
+            </h2>
+            <label
+              className={cn(
+                "mt-3 flex cursor-pointer items-center gap-3 rounded-lg border px-4 py-3 text-sm transition",
+                gift ? "border-accent bg-accent-soft" : "border-line hover:border-accent/50"
+              )}
+            >
+              <input
+                type="checkbox"
+                checked={gift}
+                onChange={(e) => setGift(e.target.checked)}
+                className="h-4 w-4 accent-accent"
+              />
+              <span className="text-graphite">Подарочная упаковка и открытка от мастера</span>
+            </label>
+            {gift && (
+              <div className="mt-3 space-y-3">
+                <textarea
+                  className={cn(fieldClass, "h-20 resize-none py-3")}
+                  placeholder="Текст открытки (необязательно)"
+                  value={giftMessage}
+                  onChange={(e) => setGiftMessage(e.target.value)}
+                  maxLength={300}
+                />
+                <label className="flex cursor-pointer items-center gap-2.5 text-sm text-graphite">
+                  <input
+                    type="checkbox"
+                    checked={hidePrice}
+                    onChange={(e) => setHidePrice(e.target.checked)}
+                    className="h-4 w-4 accent-accent"
+                  />
+                  Скрыть цену в чеке для получателя
+                </label>
+              </div>
+            )}
           </section>
         </div>
 

@@ -147,6 +147,9 @@ model Order {
   paymentMethod  String
   address        String?
   comment        String?
+  giftWrap       Boolean     @default(false)
+  giftMessage    String?
+  hidePrice      Boolean     @default(false)
   customerName   String?
   customerPhone  String?
   trackingNumber String?

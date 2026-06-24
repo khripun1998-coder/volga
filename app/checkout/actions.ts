@@ -19,6 +19,9 @@ export interface CheckoutPayload {
   deliveryMethod: string;
   payment: string;
   comment?: string;
+  giftWrap?: boolean;
+  giftMessage?: string;
+  hidePrice?: boolean;
 }
 
 export type CheckoutResult =
@@ -90,6 +93,9 @@ export async function createOrder(payload: CheckoutPayload): Promise<CheckoutRes
     paymentMethod: payload.payment,
     address: payload.receive === "pickup" ? null : payload.address?.trim() || null,
     comment: payload.comment?.trim() || null,
+    giftWrap: payload.giftWrap ?? false,
+    giftMessage: payload.giftWrap ? payload.giftMessage?.trim() || null : null,
+    hidePrice: payload.giftWrap ? payload.hidePrice ?? false : false,
     customerName: payload.name.trim(),
     customerPhone: payload.phone.trim(),
     buyerId,

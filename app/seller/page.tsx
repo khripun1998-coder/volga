@@ -1,4 +1,4 @@
-import { BadgeCheck, MapPin, Plus, UserCheck } from "lucide-react";
+import { BadgeCheck, Gift, MapPin, Plus, UserCheck } from "lucide-react";
 import {
   getSellerContext,
   getFirstThreadKey,
@@ -179,6 +179,17 @@ export default async function SellerPage() {
                 <div className="truncate text-xs text-muted">
                   {o.items.map((it) => `${it.title} × ${it.qty}`).join(", ")}
                 </div>
+                {o.giftWrap && (
+                  <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-accent-soft px-2 py-0.5 font-medium text-accent">
+                      <Gift className="h-3 w-3" strokeWidth={1.8} /> Подарок
+                    </span>
+                    {o.hidePrice && <span className="text-muted">скрыть цену в чеке</span>}
+                    {o.giftMessage && (
+                      <span className="text-graphite/70">открытка: «{o.giftMessage}»</span>
+                    )}
+                  </div>
+                )}
               </div>
               <span className="text-sm font-semibold text-graphite">{formatPrice(o.total)}</span>
               <StatusPill tone={o.escrowStatus === "RELEASED" ? "green" : "amber"}>

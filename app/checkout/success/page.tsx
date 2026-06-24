@@ -124,6 +124,17 @@ export default async function SuccessPage({
             <dt className="text-muted">Оплата</dt>
             <dd className="text-graphite">{order.paymentMethod}</dd>
           </div>
+          {order.giftWrap && (
+            <div className="flex justify-between gap-4">
+              <dt className="text-muted">Подарок</dt>
+              <dd className="text-right text-graphite">
+                Упаковка и открытка от мастера{order.hidePrice ? " · цена скрыта в чеке" : ""}
+                {order.giftMessage && isOwner && (
+                  <span className="mt-0.5 block text-muted">«{order.giftMessage}»</span>
+                )}
+              </dd>
+            </div>
+          )}
           {order.comment && isOwner && (
             <div className="flex justify-between gap-4">
               <dt className="text-muted">Комментарий</dt>
