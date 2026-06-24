@@ -49,6 +49,7 @@ model Shop {
   products     Product[]
   orders       Order[]
   employees    Employee[]
+  posts        Post[]
   createdAt    DateTime   @default(now())
 }
 
@@ -196,4 +197,15 @@ model ChatMessage {
   authorName String?
   text       String
   createdAt  DateTime @default(now())
+}
+
+// Журнал мастера — посты процесса/новостей в «канале» (без подписки).
+model Post {
+  id        String   @id @default(cuid())
+  shopId    String
+  shop      Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  title     String?
+  body      String
+  imageUrl  String?
+  createdAt DateTime @default(now())
 }

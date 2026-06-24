@@ -737,6 +737,26 @@ const STORIES: Record<string, { story: string; craftSince: number }> = {
   "stol-art": { story: "Вяжу сумки и аксессуары с лавандовыми мотивами. Натуральная пряжа, спокойные цвета и ничего лишнего — вещи, которые носят годами.", craftSince: 2019 },
 };
 
+// Журнал мастеров — посты процесса для «канала» (productIndex → фото из товара).
+const POSTS: Record<string, { title?: string; body: string; daysAgo: number; productIndex?: number }[]> = {
+  "teplye-lapki": [
+    { title: "Новая партия мишек", body: "Закончила партию «Топтыжек» — каждый получил свой характер. Молочные разобрали почти сразу, довязываю карамельных.", daysAgo: 2, productIndex: 0 },
+    { title: "Из чего вяжу", body: "Перешла на новую хлопковую пряжу — мягче и лучше держит форму. Наполнитель прежний, гипоаллергенный холлофайбер.", daysAgo: 9, productIndex: 1 },
+    { title: "Как рождается зайка", body: "Один зайка «Соня» — это около пяти вечеров: тело, длинные уши, мордочка вышивается отдельно. Тороплюсь редко — от этого зависит, будет ли он живым.", daysAgo: 18, productIndex: 1 },
+  ],
+  "kubanskaya-glina": [
+    { title: "Обжиг в дровяной печи", body: "Сегодняшний обжиг дал глубокий синий с прожилками — такой оттенок не повторить специально. Поэтому двух одинаковых кружек не бывает.", daysAgo: 3, productIndex: 0 },
+    { title: "Пробую песочную глазурь", body: "Тестирую матовую песочную глазурь на тарелках «Кубань» — получается тёплый, землистый тон.", daysAgo: 12, productIndex: 1 },
+  ],
+  "baltiyskiy-yantar": [
+    { title: "Камень с историей", body: "Попался кусок янтаря с инклюзом — крошечный пузырёк воздуха возрастом в миллионы лет. Оставлю его в кулоне как есть.", daysAgo: 4, productIndex: 0 },
+    { title: "Полировка вручную", body: "Каждый камень довожу руками — станок «съедает» рисунок. Медленнее, зато виден характер янтаря.", daysAgo: 15, productIndex: 1 },
+  ],
+  "stol-art": [
+    { title: "Лавандовая партия", body: "Связала новую партию сумок в лавандовой гамме. Пряжа натуральная, цвет спокойный — под любой образ.", daysAgo: 5, productIndex: 0 },
+  ],
+};
+
 async function main() {
   // Идемпотентность: если база уже заполнена — НЕ пересеваем (реальные данные сохраняются
   // между деплоями на постоянной БД). Полный пересев: FORCE_SEED=1 npm run db:seed
@@ -832,6 +852,21 @@ async function main() {
           materialSources: {
             create: (p.materialSources ?? []).map((m, i) => ({ ...m, position: i })),
           },
+        },
+      });
+    }
+
+    // Журнал мастера — посты процесса (фото берём из изображений товара)
+    for (const post of POSTS[s.slug] ?? []) {
+      const prod = s.products[post.productIndex ?? 0];
+      const img = prod ? imagesFor(prod.slug, prod.title)[0]?.url ?? null : null;
+      await prisma.post.create({
+        data: {
+          shopId: shop.id,
+          title: post.title ?? null,
+          body: post.body,
+          imageUrl: img,
+          createdAt: new Date(Date.now() - post.daysAgo * 86400000),
         },
       });
     }

@@ -14,6 +14,7 @@ export function ChannelTabs({ slug }: { slug: string }) {
   const seg = useSelectedLayoutSegment();
   const tabs: Tab[] = [
     { segment: null, label: "Главная", href: `/shop/${slug}` },
+    { segment: "journal", label: "Журнал", href: `/shop/${slug}/journal` },
     { segment: "products", label: "Все товары", href: `/shop/${slug}/products` },
     { segment: "about", label: "О мастере", href: `/shop/${slug}/about` },
     { segment: "reviews", label: "Отзывы", href: `/shop/${slug}/reviews` },

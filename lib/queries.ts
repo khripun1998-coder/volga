@@ -239,3 +239,12 @@ export async function getShopBySlug(slug: string) {
     },
   });
 }
+
+/** Записи журнала мастера (посты канала), новые сверху. */
+export async function getShopPosts(shopId: string, take?: number) {
+  return prisma.post.findMany({
+    where: { shopId },
+    orderBy: { createdAt: "desc" },
+    ...(take ? { take } : {}),
+  });
+}
