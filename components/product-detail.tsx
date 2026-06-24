@@ -259,6 +259,25 @@ export function ProductDetail({
             </p>
           </section>
 
+          {product.authorNote && (
+            <section>
+              <div className="rounded-2xl border border-line bg-cream/50 p-6">
+                <div className="flex items-center gap-2.5">
+                  <span
+                    className="grid h-8 w-8 place-items-center rounded-full text-sm font-semibold text-white"
+                    style={{ background: theme.accent }}
+                  >
+                    {product.shop.name.charAt(0)}
+                  </span>
+                  <span className="eyebrow">От мастера · {product.shop.name}</span>
+                </div>
+                <p className="font-serif mt-3 text-[17px] leading-[1.7] text-graphite/90">
+                  {product.authorNote}
+                </p>
+              </div>
+            </section>
+          )}
+
           {/* Главный блок: всё, что нужно знать о товаре и его получении */}
           <section>
             <p className="eyebrow">Что нужно знать</p>

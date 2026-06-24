@@ -5,41 +5,47 @@ import { cn } from "@/lib/utils";
 
 /**
  * Обложка с «мягкой деградацией»: если фото по `src` загрузилось — показываем его,
- * иначе остаётся градиент + декоративный кружок (плейсхолдер).
- * Так можно просто класть фото в /public, и они появляются без правок кода.
+ * иначе остаётся градиент + крупная монограмма (первая буква названия) — «авторская
+ * заглушка» вместо технического кружка.
+ * `zoom` — лёгкое увеличение фото при наведении на родителя с классом `group`.
  */
 export function CoverImage({
   src,
   gradient,
   className,
   alt = "",
+  zoom = false,
 }: {
   src?: string | null;
   gradient: string;
   className?: string;
   alt?: string;
+  zoom?: boolean;
 }) {
   const [failed, setFailed] = useState(false);
   const showImg = Boolean(src) && !failed;
 
   return (
     <div className={cn("relative overflow-hidden", className)} style={{ background: gradient }}>
-      {showImg && (
+      {showImg ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={src as string}
           alt={alt}
           loading="lazy"
           onError={() => setFailed(true)}
-          className="absolute inset-0 h-full w-full object-cover"
+          className={cn(
+            "absolute inset-0 h-full w-full object-cover",
+            zoom && "transition-transform duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.05]"
+          )}
         />
-      )}
-      {!showImg && (
-        <div
-          className="absolute left-1/2 top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/70"
-          style={{ boxShadow: "inset 0 0 0 1px rgba(255,255,255,.8), 0 10px 24px -8px rgba(40,40,90,.12)" }}
+      ) : (
+        <span
           aria-hidden
-        />
+          className="font-serif absolute inset-0 grid place-items-center text-6xl font-semibold text-accent/25"
+        >
+          {alt.trim().charAt(0) || "В"}
+        </span>
       )}
     </div>
   );

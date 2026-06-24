@@ -38,6 +38,7 @@ export default async function RootLayout({
   return (
     <html lang="ru" className={`${manrope.variable} ${playfair.variable} h-full antialiased`}>
       <body className="min-h-full bg-canvas text-graphite">
+        <a href="#main" className="skip-link">Перейти к содержимому</a>
         <SmoothScroll />
         <DemoBar />
         <ChromeWrapper

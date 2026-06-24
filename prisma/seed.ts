@@ -42,6 +42,7 @@ type ProductSeed = {
   dimensions?: string;
   materials?: string;
   care?: string;
+  authorNote?: string;
   applications?: string;
   production?: string;
   materialSources?: { name: string; origin?: string; supplierSlug?: string; supplierName?: string }[];
@@ -103,6 +104,7 @@ const shops: ShopSeed[] = [
         dimensions: "22 см",
         materials: "Хлопок 100%, холлофайбер",
         care: "Ручная стирка при 30°, сушка в расправленном виде.",
+        authorNote: "Вяжу каждого мишку крючком от носа до лап — около пяти вечеров. Крепления лап делаю двойными нитями, чтобы выдержали детские объятия.",
         featured: true,
         variants: [
           { kind: "Цвет", value: "Молочный" },
@@ -200,6 +202,7 @@ const shops: ShopSeed[] = [
         dimensions: "Ø9 × 10 см, 350 мл",
         materials: "Глина, пищевая глазурь",
         care: "Можно мыть в посудомоечной машине.",
+        authorNote: "Каждую кружку леплю и расписываю вручную, обжигаю в дровяной печи при 1240 °C — поэтому оттенок глазури неповторим.",
         featured: true,
         variants: [
           { kind: "Глазурь", value: "Синяя" },
@@ -838,6 +841,7 @@ async function main() {
           dimensions: p.dimensions ?? null,
           materials: p.materials ?? null,
           care: p.care ?? null,
+          authorNote: p.authorNote ?? null,
           applications: p.applications ?? null,
           production: p.production ?? null,
           deliveryInfo: s.deliveryInfo,

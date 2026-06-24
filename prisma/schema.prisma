@@ -80,6 +80,7 @@ model Product {
   dimensions       String?
   materials        String?
   care             String?
+  authorNote       String?
   applications     String?
   production       String?
   deliveryInfo     String?

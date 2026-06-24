@@ -67,6 +67,7 @@ export function ProductCard({
               gradient={cover}
               alt={product.title}
               className="absolute inset-0 h-full w-full"
+              zoom
             />
             {discount && (
               <span className="absolute left-1.5 top-1.5 rounded-full bg-paper px-2 py-0.5 text-[10px] font-semibold text-graphite hairline">
@@ -125,6 +126,7 @@ export function ProductCard({
               gradient={cover}
               alt={product.title}
               className="absolute inset-0 h-full w-full"
+              zoom
             />
             {discount && (
               <span className="absolute left-3 top-3 rounded-full bg-paper px-2.5 py-1 text-[11px] font-semibold tracking-tight text-graphite hairline">

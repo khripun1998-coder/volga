@@ -14,7 +14,7 @@ export function ChromeWrapper({
       {sidebar}
       <div className="flex min-w-0 flex-1 flex-col">
         {header}
-        <main className="flex-1 pb-24 md:pb-0">{children}</main>
+        <main id="main" className="flex-1 pb-24 md:pb-0">{children}</main>
         {footer}
       </div>
     </div>
