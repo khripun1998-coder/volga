@@ -102,20 +102,62 @@ export function DashSection({
   );
 }
 
+function Sparkline({ data }: { data: number[] }) {
+  const w = 64;
+  const h = 20;
+  const max = Math.max(1, ...data);
+  const pts = data
+    .map((v, i) => `${(i / Math.max(1, data.length - 1)) * w},${h - (v / max) * h}`)
+    .join(" ");
+  return (
+    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} aria-hidden className="overflow-visible">
+      <polyline
+        points={pts}
+        fill="none"
+        stroke="var(--color-accent)"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
 export function Stat({
   label,
   value,
   hint,
+  delta,
+  spark,
 }: {
   label: string;
   value: string | number;
   hint?: string;
+  /** Динамика в процентах (знаковая) — рисует ▲/▼ и цвет. */
+  delta?: number;
+  /** Точки мини-графика тренда. */
+  spark?: number[];
 }) {
   return (
     <div className="rounded-2xl border border-line bg-paper p-5">
-      <div className="text-sm text-muted">{label}</div>
-      <div className="mt-1.5 font-display text-[26px] font-semibold leading-none text-graphite">
-        {value}
+      <div className="flex items-start justify-between gap-2">
+        <div className="text-sm text-muted">{label}</div>
+        {spark && spark.length > 1 && <Sparkline data={spark} />}
+      </div>
+      <div className="mt-1.5 flex items-end gap-2">
+        <div className="font-display text-[26px] font-semibold leading-none text-graphite">
+          {value}
+        </div>
+        {delta != null && (
+          <span
+            className={cn(
+              "inline-flex items-center gap-0.5 text-xs font-semibold",
+              delta >= 0 ? "text-sage" : "text-red-500"
+            )}
+          >
+            {delta >= 0 ? "▲" : "▼"} {Math.abs(delta)}%
+          </span>
+        )}
       </div>
       {hint && <div className="mt-2 text-xs text-muted">{hint}</div>}
     </div>

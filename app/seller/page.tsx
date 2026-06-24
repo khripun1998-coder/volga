@@ -6,6 +6,8 @@ import {
   orderStatusLabel,
   productStatusLabel,
   escrowLabel,
+  dailyBuckets,
+  trendDelta,
 } from "@/lib/demo";
 import { getCategories, getShopClientCount } from "@/lib/queries";
 import { getSession } from "@/lib/session";
@@ -106,13 +108,20 @@ export default async function SellerPage() {
   const clients = await getShopClientCount(shop.id);
   const recentOrders = shop.orders.slice(0, 12);
 
+  // Тренды для KPI-карточек (спарклайн + дельта неделя-к-неделе)
+  const orderDates = shop.orders.map((o) => o.createdAt);
+  const orderSpark = dailyBuckets(orderDates, null, 14);
+  const revSpark = dailyBuckets(orderDates, shop.orders.map((o) => o.total), 14);
+  const orderDelta = trendDelta(orderSpark);
+  const revDelta = trendDelta(revSpark);
+
   return (
     <DashShell title={shop.name} role={`Продавец · ${shop.city}`} nav={nav}>
       <DashSection id="overview" title="Статистика">
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           <Stat label="Товары" value={active} hint={pending ? `${pending} на модерации` : "все опубликованы"} />
-          <Stat label="Заказы" value={shop.orders.length} />
-          <Stat label="Выручка" value={formatPrice(revenue)} />
+          <Stat label="Заказы" value={shop.orders.length} delta={orderDelta} spark={orderSpark} hint="неделя к неделе" />
+          <Stat label="Выручка" value={formatPrice(revenue)} delta={revDelta} spark={revSpark} hint="неделя к неделе" />
           <Stat label="Рейтинг" value={shop.rating.toFixed(1)} hint={`${shop.ratingCount} отзывов`} />
         </div>
         <MilestoneCard clients={clients} />

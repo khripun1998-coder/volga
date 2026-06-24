@@ -30,6 +30,26 @@ export const productStatusLabel = (c: string) =>
 export const roleLabel = (c: string) =>
   ({ BUYER: "Покупатель", SELLER: "Продавец", ADMIN: "Администратор", MODERATOR: "Модератор" }[c] ?? c);
 
+/** Дневные корзины за последние `days` дней — для спарклайнов кабинета. */
+export function dailyBuckets(dates: Date[], values: number[] | null, days = 14): number[] {
+  const now = Date.now();
+  const out = new Array(days).fill(0);
+  dates.forEach((dt, i) => {
+    const age = Math.floor((now - dt.getTime()) / 86400000);
+    if (age >= 0 && age < days) out[days - 1 - age] += values ? values[i] ?? 0 : 1;
+  });
+  return out;
+}
+
+/** Динамика: вторая половина периода против первой, в процентах. */
+export function trendDelta(series: number[]): number {
+  const h = Math.floor(series.length / 2);
+  const prev = series.slice(0, h).reduce((a, b) => a + b, 0);
+  const rec = series.slice(h).reduce((a, b) => a + b, 0);
+  if (prev === 0) return rec > 0 ? 100 : 0;
+  return Math.round(((rec - prev) / prev) * 100);
+}
+
 /** Контекст покупателя. По умолчанию — демо‑покупатель, иначе по id сессии. */
 export async function getBuyerContext(userId?: string) {
   const buyer = userId
