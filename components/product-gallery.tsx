@@ -115,15 +115,6 @@ export function ProductGallery({
         onPointerMove={onPointerMove}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
-        role="button"
-        tabIndex={0}
-        aria-label="Открыть фото в полном размере"
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            setLightbox(true);
-          }
-        }}
       >
         <Image
           src={main.url}
@@ -135,9 +126,17 @@ export function ProductGallery({
           style={zoom ? { transform: "scale(1.8)", transformOrigin: `${origin.x}% ${origin.y}%` } : undefined}
         />
 
-        <span className="pointer-events-none absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-paper/85 text-graphite/70 opacity-0 backdrop-blur transition group-hover:opacity-100">
+        <button
+          type="button"
+          aria-label="Открыть фото в полном размере"
+          onClick={(e) => {
+            e.stopPropagation();
+            setLightbox(true);
+          }}
+          className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-paper/85 text-graphite/70 opacity-0 backdrop-blur transition hover:bg-paper group-hover:opacity-100 focus-visible:opacity-100"
+        >
           <ZoomIn className="h-4 w-4" strokeWidth={1.8} />
-        </span>
+        </button>
 
         {n > 1 && (
           <span className="pointer-events-none absolute bottom-3 left-3 rounded-full bg-graphite/70 px-2.5 py-1 text-[11px] font-medium text-white backdrop-blur">
@@ -154,7 +153,7 @@ export function ProductGallery({
                 e.stopPropagation();
                 go(-1);
               }}
-              className="absolute left-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-paper/85 text-graphite opacity-0 backdrop-blur transition hover:bg-paper group-hover:opacity-100"
+              className="absolute left-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-paper/85 text-graphite opacity-100 backdrop-blur transition hover:bg-paper md:opacity-0 md:group-hover:opacity-100"
             >
               <ChevronLeft className="h-5 w-5" strokeWidth={1.8} />
             </button>
@@ -165,7 +164,7 @@ export function ProductGallery({
                 e.stopPropagation();
                 go(1);
               }}
-              className="absolute right-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-paper/85 text-graphite opacity-0 backdrop-blur transition hover:bg-paper group-hover:opacity-100"
+              className="absolute right-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-paper/85 text-graphite opacity-100 backdrop-blur transition hover:bg-paper md:opacity-0 md:group-hover:opacity-100"
             >
               <ChevronRight className="h-5 w-5" strokeWidth={1.8} />
             </button>

@@ -3,30 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import {
-  ArrowRight,
-  Heart,
-  Home,
-  type LucideIcon,
-  MessageCircle,
-  PanelLeftClose,
-  PanelLeftOpen,
-  Search,
-  Store,
-  User,
-} from "lucide-react";
+import { ArrowRight, Heart, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-type Session = { id: string; name: string; role: string } | null;
+import { getNavItems, isActivePath, type NavItem, type Session } from "@/lib/nav";
 
 const STORAGE_KEY = "volga.sidebar.collapsed";
-
-interface Item {
-  href: string;
-  label: string;
-  icon: LucideIcon;
-  badge?: number;
-}
 
 function useCollapsed(): [boolean, (v: boolean) => void] {
   const [collapsed, setCollapsed] = useState(false);
@@ -74,7 +55,7 @@ function SidebarLink({
   collapsed,
   onNavigate,
 }: {
-  item: Item;
+  item: NavItem;
   active: boolean;
   collapsed: boolean;
   onNavigate?: () => void;
@@ -124,65 +105,17 @@ function SidebarLink({
 
 export function AppSidebar({ session }: { session: Session }) {
   const [collapsed, setCollapsed] = useCollapsed();
-  const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
+  const items = getNavItems(session);
 
-  const isActive = (href: string) => {
-    if (href === "/") return pathname === "/";
-    return pathname.startsWith(href.split("#")[0]);
-  };
-
-  const roleHome = session
-    ? session.role === "SELLER"
-      ? "/seller"
-      : session.role === "ADMIN"
-        ? "/admin"
-        : "/account"
-    : "/login";
-  // Навигация площадки (по направлению клиента: сайдбар + лента/магазины), затем личное.
-  const items: Item[] = [
-    { href: "/", label: "Лента", icon: Home },
-    { href: "/shops", label: "Магазины", icon: Store },
-    { href: "/catalog", label: "Каталог", icon: Search },
-    { href: roleHome, label: "Профиль", icon: User },
-    { href: "/account#messages", label: "Сообщения", icon: MessageCircle },
-  ];
-
+  // Десктоп-сайдбар. На телефоне (≤ md) навигацию даёт MobileTabBar (см. app/layout.tsx).
   return (
-    <>
-      <button
-        type="button"
-        onClick={() => setMobileOpen(true)}
-        aria-label="Открыть меню"
-        className="fixed bottom-5 left-1/2 z-40 -translate-x-1/2 rounded-full bg-accent px-5 py-3 text-sm font-medium text-white shadow-[var(--shadow-lift)] transition active:scale-95 md:hidden"
-      >
-        Меню
-      </button>
-
-      {mobileOpen && (
-        <div className="fixed inset-0 z-50 md:hidden">
-          <div
-            className="absolute inset-0 bg-graphite/30 backdrop-blur-sm"
-            onClick={() => setMobileOpen(false)}
-          />
-          <SidebarBody
-            items={items}
-            isActive={isActive}
-            collapsed={false}
-            setCollapsed={() => setMobileOpen(false)}
-            isMobile
-            onNavigate={() => setMobileOpen(false)}
-          />
-        </div>
-      )}
-
-      <SidebarBody
-        items={items}
-        isActive={isActive}
-        collapsed={collapsed}
-        setCollapsed={setCollapsed}
-      />
-    </>
+    <SidebarBody
+      items={items}
+      isActive={(href) => isActivePath(pathname, href)}
+      collapsed={collapsed}
+      setCollapsed={setCollapsed}
+    />
   );
 }
 
@@ -191,33 +124,23 @@ function SidebarBody({
   isActive,
   collapsed,
   setCollapsed,
-  isMobile = false,
-  onNavigate,
 }: {
-  items: Item[];
+  items: NavItem[];
   isActive: (href: string) => boolean;
   collapsed: boolean;
   setCollapsed: (v: boolean) => void;
-  isMobile?: boolean;
-  onNavigate?: () => void;
 }) {
   const width = collapsed ? 64 : 248;
   return (
     <aside
-      className={cn(
-        "z-40 flex shrink-0 flex-col bg-paper hairline border-y-0 border-l-0 transition-[width] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
-        isMobile
-          ? "absolute left-0 top-0 h-full w-64 shadow-[var(--shadow-lift)]"
-          : "sticky top-0 hidden h-screen md:flex"
-      )}
-      style={isMobile ? undefined : { width, minWidth: width, maxWidth: width }}
+      className="sticky top-0 z-40 hidden h-screen shrink-0 flex-col bg-paper hairline border-y-0 border-l-0 transition-[width] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:flex"
+      style={{ width, minWidth: width, maxWidth: width }}
       aria-label="Главное меню"
     >
       {/* Логотип: эмблема + чёткая надпись «Волга» (раньше вязаный курсив читался как «ВолХа») */}
       <div className={cn("flex h-16 items-center px-5", collapsed && "justify-center px-0")}>
         <Link
           href="/"
-          onClick={onNavigate}
           aria-label="Волга — на главную"
           className={cn("flex items-center gap-2.5", collapsed && "gap-0")}
         >
@@ -234,12 +157,7 @@ function SidebarBody({
         <ul className="flex flex-col gap-1">
           {items.map((it) => (
             <li key={it.href}>
-              <SidebarLink
-                item={it}
-                active={isActive(it.href)}
-                collapsed={collapsed}
-                onNavigate={onNavigate}
-              />
+              <SidebarLink item={it} active={isActive(it.href)} collapsed={collapsed} />
             </li>
           ))}
         </ul>
@@ -259,7 +177,6 @@ function SidebarBody({
           </p>
           <Link
             href="/seller"
-            onClick={onNavigate}
             className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-paper px-3.5 py-2 text-[12px] font-semibold text-accent transition hover:bg-white"
           >
             Подробнее
@@ -269,40 +186,26 @@ function SidebarBody({
       )}
 
       {/* Кнопка сворачивания */}
-      {!isMobile && (
-        <div className={cn("p-3", !collapsed && "mt-0")}>
-          <button
-            type="button"
-            onClick={() => setCollapsed(!collapsed)}
-            aria-label={collapsed ? "Развернуть меню" : "Свернуть меню"}
-            className={cn(
-              "flex h-10 w-full items-center gap-3 rounded-xl px-3 text-[13px] text-muted transition hover:bg-cream hover:text-graphite",
-              collapsed && "mt-auto justify-center px-0"
-            )}
-          >
-            {collapsed ? (
-              <PanelLeftOpen className="h-[18px] w-[18px]" strokeWidth={1.6} />
-            ) : (
-              <>
-                <PanelLeftClose className="h-[18px] w-[18px]" strokeWidth={1.6} />
-                <span>Скрыть</span>
-              </>
-            )}
-          </button>
-        </div>
-      )}
-
-      {isMobile && (
-        <div className="p-3">
-          <button
-            type="button"
-            onClick={() => setCollapsed(false)}
-            className="h-10 w-full rounded-xl text-sm text-muted hover:bg-cream hover:text-graphite"
-          >
-            Закрыть
-          </button>
-        </div>
-      )}
+      <div className={cn("p-3", !collapsed && "mt-0")}>
+        <button
+          type="button"
+          onClick={() => setCollapsed(!collapsed)}
+          aria-label={collapsed ? "Развернуть меню" : "Свернуть меню"}
+          className={cn(
+            "flex h-10 w-full items-center gap-3 rounded-xl px-3 text-[13px] text-muted transition hover:bg-cream hover:text-graphite",
+            collapsed && "mt-auto justify-center px-0"
+          )}
+        >
+          {collapsed ? (
+            <PanelLeftOpen className="h-[18px] w-[18px]" strokeWidth={1.6} />
+          ) : (
+            <>
+              <PanelLeftClose className="h-[18px] w-[18px]" strokeWidth={1.6} />
+              <span>Скрыть</span>
+            </>
+          )}
+        </button>
+      </div>
     </aside>
   );
 }

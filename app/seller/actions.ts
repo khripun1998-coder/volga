@@ -53,13 +53,14 @@ export async function setOrderStatus(formData: FormData) {
   const status = String(formData.get("status") ?? "");
   if (!id || !ORDER_STATUSES.some((s) => s.code === status)) return;
 
-  // Эскроу следует за статусом: доставлен/завершён → средства выплачены продавцу.
+  // Эскроу следует за статусом в ОБЕ стороны: доставлен/завершён → выплачен продавцу,
+  // иначе удержан (если статус откатили назад — эскроу тоже вернётся в «удержано»).
   const escrowStatus =
-    status === "DELIVERED" || status === "COMPLETED" ? "RELEASED" : undefined;
+    status === "DELIVERED" || status === "COMPLETED" ? "RELEASED" : "HELD";
 
   const res = await prisma.order.updateMany({
     where: { id, shopId: shop.id },
-    data: escrowStatus ? { status, escrowStatus } : { status },
+    data: { status, escrowStatus },
   });
   if (res.count === 0) return;
 

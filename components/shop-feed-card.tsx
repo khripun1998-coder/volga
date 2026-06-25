@@ -72,6 +72,7 @@ export function ShopFeedCard({
             alt={shop.name}
             className="absolute inset-0 h-full w-full"
             zoom
+            grain
           />
           {index < 3 && (
             <span className="absolute left-2 top-2 rounded-full bg-paper px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent shadow-[var(--shadow-soft)]">
@@ -88,7 +89,7 @@ export function ShopFeedCard({
             {shop.verified && (
               <BadgeCheck
                 className="h-4 w-4 shrink-0"
-                style={{ color: "var(--color-verified)" }}
+                style={{ color: "var(--color-accent)" }}
               />
             )}
           </div>
@@ -134,6 +135,8 @@ export function ShopFeedCard({
           gradient={cover}
           alt={shop.name}
           className="absolute inset-0 h-full w-full"
+          zoom
+          grain
         />
 
         {index < 3 && (

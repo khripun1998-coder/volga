@@ -6,6 +6,7 @@ import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { ProductArtwork } from "@/components/product-artwork";
 import { useCart, selectTotal } from "@/lib/cart-store";
 import { buttonVariants } from "@/components/ui/button";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import { formatPrice, pluralize } from "@/lib/utils";
 
 export default function CartPage() {
@@ -47,6 +48,10 @@ export default function CartPage() {
 
   return (
     <div className="container-page py-10">
+      <Breadcrumbs
+        items={[{ label: "Главная", href: "/" }, { label: "Корзина" }]}
+        className="mb-4"
+      />
       <h1 className="font-display text-3xl font-semibold text-graphite md:text-4xl">
         Корзина
       </h1>
@@ -55,6 +60,7 @@ export default function CartPage() {
       </p>
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_360px]">
+        <div>
         <ul className="space-y-4">
           {items.map((item) => (
             <li
@@ -124,15 +130,15 @@ export default function CartPage() {
               </div>
             </li>
           ))}
-
-          <button
-            type="button"
-            onClick={clear}
-            className="text-sm text-muted transition hover:text-graphite"
-          >
-            Очистить корзину
-          </button>
         </ul>
+        <button
+          type="button"
+          onClick={clear}
+          className="mt-4 text-sm text-muted transition hover:text-graphite"
+        >
+          Очистить корзину
+        </button>
+        </div>
 
         <aside className="lg:sticky lg:top-28 lg:self-start">
           <div className="rounded-xl border border-line p-6">

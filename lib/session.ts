@@ -8,9 +8,18 @@ export interface Session {
 }
 
 const COOKIE = "volga_session";
-// На проде задайте SESSION_SECRET в окружении (Render → Environment).
-// Дев-фолбэк позволяет работать локально; для боевой защиты от подделки нужен свой секрет.
+// Боевой секрет приходит из окружения (Render задаёт его автоматически — см. render.yaml,
+// `SESSION_SECRET: generateValue`). Фолбэк ниже используется ТОЛЬКО локально (dev), где
+// подделка сессии не имеет значения; в проде ключ всегда уникальный.
 const SECRET = process.env.SESSION_SECRET || "volga-dev-secret-change-me";
+
+/**
+ * Демо-режим: вход одним кликом («Демо»-бар) и «любой пароль» для засеянных аккаунтов.
+ * По умолчанию ВКЛЮЧЁН (чтобы живой демо-стенд не сломался, если переменные окружения
+ * Render ещё не синхронизированы). Для реального прод-запуска выставить `DISABLE_DEMO=1` —
+ * тогда привилегированный демо-вход и вход без пароля отключаются.
+ */
+export const DEMO_ENABLED = process.env.DISABLE_DEMO !== "1";
 
 function sign(payload: string): string {
   return createHmac("sha256", SECRET).update(payload).digest("base64url");

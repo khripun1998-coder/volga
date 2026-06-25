@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { setSession, clearSession } from "@/lib/session";
+import { setSession, clearSession, DEMO_ENABLED } from "@/lib/session";
 
 // Демо-вход одним кликом: ставит НАСТОЯЩУЮ подписанную сессию нужной роли.
 // Так демо работает, а реальные проверки доступа (гейты /admin, /seller) проходят.
@@ -13,6 +13,8 @@ const DEMO: Record<string, { email: string; home: string }> = {
 };
 
 export async function loginAsDemo(formData: FormData) {
+  // Привилегированный вход одним кликом — только в демо-режиме (не в реальном проде).
+  if (!DEMO_ENABLED) redirect("/login");
   const demo = DEMO[String(formData.get("role") ?? "")];
   if (!demo) redirect("/");
   const user = await prisma.user.findUnique({ where: { email: demo.email } });

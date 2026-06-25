@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { BadgeCheck, ChevronRight, MapPin, RotateCcw, ShieldCheck, Star, Truck } from "lucide-react";
+import { BadgeCheck, MapPin, RotateCcw, ShieldCheck, Star, Truck } from "lucide-react";
 import { ProductArtwork } from "@/components/product-artwork";
 import { ProductGallery } from "@/components/product-gallery";
 import { ProductPurchase } from "@/components/product-purchase";
@@ -113,24 +113,7 @@ export function ProductDetail({
 
   return (
     <div className={inner} style={themeVars(theme)}>
-      {variant === "page" && (
-        <nav className="flex flex-wrap items-center gap-1.5 text-sm text-muted">
-          <Link href="/" className="transition hover:text-graphite">
-            Лента
-          </Link>
-          <ChevronRight className="h-3.5 w-3.5" />
-          <Link
-            href={`/shop/${product.shop.slug}`}
-            className="transition hover:text-graphite"
-          >
-            {product.shop.name}
-          </Link>
-          <ChevronRight className="h-3.5 w-3.5" />
-          <span className="line-clamp-1 max-w-xs text-graphite">{product.title}</span>
-        </nav>
-      )}
-
-      <div className={`grid gap-10 ${variant === "page" ? "mt-6" : "mt-3"} lg:grid-cols-[1.1fr_1fr]`}>
+      <div className={`grid gap-10 ${variant === "page" ? "" : "mt-3"} lg:grid-cols-[1.1fr_1fr]`}>
         <div className={variant === "page" ? "lg:sticky lg:top-28 lg:self-start" : ""}>
           {product.images.length > 0 ? (
             <ProductGallery images={product.images} title={product.title} />
@@ -227,7 +210,7 @@ export function ProductDetail({
             </span>
             <span className="inline-flex items-center gap-1.5">
               <RotateCcw className="h-4 w-4 text-accent" strokeWidth={1.6} />
-              Возврат 7 дней
+              Возврат 14 дней
             </span>
             {product.shop.verified && (
               <span className="inline-flex items-center gap-1.5">
@@ -542,8 +525,8 @@ export function ProductDetail({
             Похожие изделия
           </h2>
           <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-3 lg:grid-cols-4">
-            {related.map((p, i) => (
-              <ProductCard key={p.id} product={p} index={i} layout="feed" />
+            {related.map((p) => (
+              <ProductCard key={p.id} product={p} layout="feed" />
             ))}
           </div>
         </section>

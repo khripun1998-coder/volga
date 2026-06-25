@@ -30,7 +30,7 @@ export default async function ShopReviews({
       <div className="grid place-items-center rounded-3xl border border-dashed border-line py-20 text-center">
         <p className="font-display text-xl text-graphite">Отзывов пока нет</p>
         <p className="mt-1 text-sm text-muted">
-          Будут первыми покупателями — расскажут об опыте здесь.
+          Будьте первым покупателем — и расскажите о своём опыте здесь.
         </p>
       </div>
     );

@@ -69,19 +69,17 @@ export function ShopCarousel({ shops }: { shops: FeedShop[] }) {
 
   const go = (d: number) => setActive((a) => clamp(a + d));
 
-  // клавиши ← →
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      // Не перехватываем стрелки, когда пользователь печатает (поиск/поля ввода)
-      const el = document.activeElement as HTMLElement | null;
-      if (el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable)) return;
-      if (e.key === "ArrowLeft") go(-1);
-      if (e.key === "ArrowRight") go(1);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shops.length]);
+  // Стрелки ← → работают, ТОЛЬКО когда фокус внутри карусели (не перехватываем
+  // прокрутку всей страницы и другие виджеты).
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      go(-1);
+    } else if (e.key === "ArrowRight") {
+      e.preventDefault();
+      go(1);
+    }
+  };
 
   const onCardClick = (i: number, slug: string) => {
     if (Date.now() - lastDrag.current < 220) return; // не считаем перетаскивание за клик
@@ -99,7 +97,14 @@ export function ShopCarousel({ shops }: { shops: FeedShop[] }) {
   }
 
   return (
-    <div className="relative">
+    <div
+      className="relative rounded-3xl focus-visible:outline-none"
+      role="region"
+      aria-roledescription="карусель"
+      aria-label="Магазины недели"
+      tabIndex={0}
+      onKeyDown={onKeyDown}
+    >
       <div ref={wrapRef} className="overflow-hidden px-1 py-8">
         <motion.div
           className="flex w-max cursor-grab active:cursor-grabbing"
@@ -226,6 +231,7 @@ function Slide({
           gradient={cover}
           alt={shop.name}
           className="absolute inset-0 h-full w-full"
+          grain
         />
         <span className="absolute left-4 top-4 rounded-full bg-paper px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-accent shadow-[var(--shadow-soft)]">
           ТОП {rank}
@@ -243,7 +249,7 @@ function Slide({
           {shop.verified && (
             <BadgeCheck
               className="h-4 w-4 shrink-0"
-              style={{ color: "var(--color-verified)" }}
+              style={{ color: "var(--color-accent)" }}
             />
           )}
         </div>

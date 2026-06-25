@@ -109,8 +109,10 @@ export function SearchBox({ className }: { className?: string }) {
           onKeyDown={onKeyDown}
           placeholder="Найти магазин или работу мастера"
           role="combobox"
-          aria-expanded={showPanel && has}
+          aria-expanded={showPanel}
           aria-autocomplete="list"
+          aria-controls="search-listbox"
+          aria-activedescendant={active >= 0 && items[active] ? `sb-opt-${active}` : undefined}
           aria-label="Поиск по магазинам и изделиям"
           className="h-12 w-full rounded-full bg-cream pl-11 pr-12 text-[14px] text-graphite transition placeholder:text-muted/80 focus:bg-paper focus:outline-none focus:ring-2 focus:ring-accent/20"
         />
@@ -124,7 +126,7 @@ export function SearchBox({ className }: { className?: string }) {
       </form>
 
       {showPanel && (
-        <div className="absolute z-40 mt-2 max-h-[70vh] w-full overflow-auto rounded-2xl bg-paper p-2 shadow-[var(--shadow-lift)] hairline">
+        <div id="search-listbox" role="listbox" className="absolute z-40 mt-2 max-h-[70vh] w-full overflow-auto rounded-2xl bg-paper p-2 shadow-[var(--shadow-lift)] hairline">
           {!has && (
             <div className="px-3 py-4 text-sm text-muted">
               Ничего не нашлось по «{q.trim()}»
@@ -140,7 +142,7 @@ export function SearchBox({ className }: { className?: string }) {
                 idx++;
                 const i = idx;
                 return (
-                  <button key={p.slug} type="button" onMouseEnter={() => setActive(i)} onClick={() => go(`/product/${p.slug}`)} className={rowCls(i)}>
+                  <button key={p.slug} id={`sb-opt-${i}`} role="option" aria-selected={i === active} type="button" onMouseEnter={() => setActive(i)} onClick={() => go(`/product/${p.slug}`)} className={rowCls(i)}>
                     <span className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-cream">
                       {p.image && <Image src={p.image} alt="" fill sizes="40px" className="object-cover" />}
                     </span>
@@ -164,7 +166,7 @@ export function SearchBox({ className }: { className?: string }) {
                 idx++;
                 const i = idx;
                 return (
-                  <button key={s.slug} type="button" onMouseEnter={() => setActive(i)} onClick={() => go(`/shop/${s.slug}`)} className={rowCls(i)}>
+                  <button key={s.slug} id={`sb-opt-${i}`} role="option" aria-selected={i === active} type="button" onMouseEnter={() => setActive(i)} onClick={() => go(`/shop/${s.slug}`)} className={rowCls(i)}>
                     <span className="relative grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full bg-accent-soft text-accent">
                       {s.avatar ? <Image src={s.avatar} alt="" fill sizes="40px" className="object-cover" /> : <Store className="h-4 w-4" strokeWidth={1.7} />}
                     </span>
@@ -188,7 +190,7 @@ export function SearchBox({ className }: { className?: string }) {
                 idx++;
                 const i = idx;
                 return (
-                  <button key={c.slug} type="button" onMouseEnter={() => setActive(i)} onClick={() => go(`/catalog?category=${c.slug}`)} className={rowCls(i)}>
+                  <button key={c.slug} id={`sb-opt-${i}`} role="option" aria-selected={i === active} type="button" onMouseEnter={() => setActive(i)} onClick={() => go(`/catalog?category=${c.slug}`)} className={rowCls(i)}>
                     <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-cream text-muted">
                       <Tag className="h-4 w-4" strokeWidth={1.7} />
                     </span>

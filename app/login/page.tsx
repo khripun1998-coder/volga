@@ -35,6 +35,12 @@ export default async function LoginPage({
   searchParams: Promise<{ error?: string }>;
 }) {
   const { error } = await searchParams;
+  const errorMessages: Record<string, string> = {
+    "1": "Не удалось войти. Проверьте email и пароль или воспользуйтесь демо-доступом ниже.",
+    reg: "Проверьте поля: имя, корректный email и пароль не короче 8 символов.",
+    exists: "Аккаунт с таким email уже существует — войдите в него.",
+  };
+  const errorText = error ? errorMessages[error] ?? "Что-то пошло не так. Попробуйте ещё раз." : null;
   const field =
     "h-11 w-full rounded-lg border border-line bg-paper px-3.5 text-sm text-graphite focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/15";
 
@@ -56,9 +62,9 @@ export default async function LoginPage({
             className="mt-8 max-w-md space-y-3 rounded-[24px] border border-white/70 bg-white/80 p-6 shadow-[var(--shadow-soft)] backdrop-blur-xl"
           >
             <div className="text-sm font-semibold text-graphite">Войти в аккаунт</div>
-            {error && (
+            {errorText && (
               <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
-                Пользователь не найден. Используйте демо-почту ниже.
+                {errorText}
               </p>
             )}
             <input name="email" type="email" placeholder="Email" required className={field} />

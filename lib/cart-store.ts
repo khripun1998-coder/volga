@@ -12,6 +12,8 @@ export interface CartItem {
   shopName: string;
   variant?: string;
   qty: number;
+  /** Потолок количества (склад; для «под заказ» — большой). Ограничивает add/setQty. */
+  maxQty?: number;
 }
 
 interface CartState {
@@ -31,6 +33,7 @@ export const useCart = create<CartState>()(
       items: [],
       add: (item, qty = 1) =>
         set((state) => {
+          const cap = (n: number) => (item.maxQty != null ? Math.min(n, item.maxQty) : n);
           const existing = state.items.find((i) =>
             sameLine(i, item.productId, item.variant)
           );
@@ -38,12 +41,12 @@ export const useCart = create<CartState>()(
             return {
               items: state.items.map((i) =>
                 sameLine(i, item.productId, item.variant)
-                  ? { ...i, qty: i.qty + qty }
+                  ? { ...i, qty: cap(i.qty + qty) }
                   : i
               ),
             };
           }
-          return { items: [...state.items, { ...item, qty }] };
+          return { items: [...state.items, { ...item, qty: cap(qty) }] };
         }),
       remove: (productId, variant) =>
         set((state) => ({
@@ -53,7 +56,9 @@ export const useCart = create<CartState>()(
         set((state) => ({
           items: state.items
             .map((i) =>
-              sameLine(i, productId, variant) ? { ...i, qty: Math.max(1, qty) } : i
+              sameLine(i, productId, variant)
+                ? { ...i, qty: Math.max(1, i.maxQty != null ? Math.min(qty, i.maxQty) : qty) }
+                : i
             )
             .filter((i) => i.qty > 0),
         })),

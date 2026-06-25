@@ -39,7 +39,8 @@ export async function searchSuggest(q: string): Promise<SuggestResult> {
       .filter(
         (p) =>
           p.title.toLowerCase().includes(term) ||
-          p.shortDescription.toLowerCase().includes(term)
+          p.shortDescription.toLowerCase().includes(term) ||
+          p.shop.name.toLowerCase().includes(term)
       )
       .slice(0, 6)
       .map((p) => ({

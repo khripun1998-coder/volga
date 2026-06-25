@@ -13,7 +13,9 @@ export async function addReview(formData: FormData) {
   const text = String(formData.get("text") ?? "").trim();
   if (!productId || !text) return;
 
+  // Отзыв может оставить только авторизованный пользователь (защита от спама/накрутки).
   const session = await getSession();
+  if (!session) return;
   const product = await prisma.product.findUnique({
     where: { id: productId },
     select: { id: true, slug: true, shopId: true, shop: { select: { rating: true, ratingCount: true } } },
@@ -21,7 +23,7 @@ export async function addReview(formData: FormData) {
   if (!product) return;
 
   await prisma.review.create({
-    data: { productId, rating, text, authorName: session?.name ?? "Гость" },
+    data: { productId, rating, text, authorName: session.name },
   });
 
   // Вплетаем новую оценку в текущий рейтинг магазина (счётчик растёт, не сбрасывается).

@@ -75,8 +75,9 @@ export default async function AdminPage() {
     <DashShell title="Панель платформы" role="Администратор" nav={nav}>
       <DashSection id="dashboard" title="Дашборд">
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
-          <Stat label="Оборот" value={formatPrice(kpi.revenue)} hint="по всем заказам" />
-          <Stat label="Заказы" value={kpi.orders} />
+          <Stat label="Оборот" value={formatPrice(kpi.revenue)} delta={kpi.revDelta} spark={kpi.revSpark} hint="неделя к неделе" />
+          <Stat label="Заказы" value={kpi.orders} delta={kpi.orderDelta} spark={kpi.orderSpark} hint="неделя к неделе" />
+          <Stat label="Удержано в эскроу" value={formatPrice(kpi.escrowHeld)} hint="ожидает выплаты продавцам" />
           <Stat label="Магазины" value={kpi.shops} />
           <Stat label="Активные товары" value={kpi.activeProducts} />
           <Stat label="Пользователи" value={kpi.users} />
@@ -142,6 +143,9 @@ export default async function AdminPage() {
               )}
             </Card>
           ))}
+          {disputes.length === 0 && (
+            <p className="text-sm text-muted">Открытых споров нет — все вопросы урегулированы.</p>
+          )}
         </div>
       </DashSection>
 

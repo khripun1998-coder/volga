@@ -117,8 +117,8 @@ export default async function ShopHome({
             </Link>
           </div>
           <div className="grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-3 lg:grid-cols-4">
-            {fresh.map((p, i) => (
-              <ProductCard key={p.id} product={p} index={i} layout="channel" />
+            {fresh.map((p) => (
+              <ProductCard key={p.id} product={p} layout="channel" />
             ))}
           </div>
         </section>

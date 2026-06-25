@@ -49,7 +49,8 @@ export async function getCatalog(f: CatalogFilters): Promise<CardProduct[]> {
   if (f.tag === "russia") where.madeInRussia = true;
   if (f.tag === "eco") where.eco = true;
   if (f.city) where.shop = { is: { city: f.city } };
-  if (f.inStock) where.stock = { gt: 0 };
+  // «В наличии» включает и товары «под заказ» — их можно купить при нулевом складе.
+  if (f.inStock) where.OR = [{ stock: { gt: 0 } }, { madeToOrder: true }];
   if (f.min != null || f.max != null) {
     where.price = {};
     if (f.min != null) where.price.gte = f.min;

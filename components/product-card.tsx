@@ -22,13 +22,11 @@ function coverIndex(id: string) {
 
 export function ProductCard({
   product,
-  index = 0,
   layout = "feed",
   showRating = false,
   row = false,
 }: {
   product: CardProduct;
-  index?: number;
   layout?: "feed" | "channel";
   showRating?: boolean;
   /** Горизонтальная раскладка для режима «по 1» (список). */

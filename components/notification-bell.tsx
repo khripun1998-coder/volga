@@ -14,15 +14,17 @@ export function NotificationBell() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="relative hidden sm:block">
+    <div className="relative">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        aria-label="Уведомления"
+        aria-label="Уведомления, есть новые"
+        aria-haspopup="dialog"
+        aria-expanded={open}
         className="relative grid h-10 w-10 place-items-center rounded-full text-graphite transition hover:bg-cream"
       >
         <Bell className="h-5 w-5" strokeWidth={1.6} />
-        <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-accent" />
+        <span aria-hidden className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-accent" />
       </button>
       {open && (
         <>

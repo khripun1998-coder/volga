@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
  * иначе остаётся градиент + крупная монограмма (первая буква названия) — «авторская
  * заглушка» вместо технического кружка.
  * `zoom` — лёгкое увеличение фото при наведении на родителя с классом `group`.
+ * `grain` — тонкая зернистая фактура поверх (приятно на градиентных заглушках).
  */
 export function CoverImage({
   src,
@@ -15,12 +16,14 @@ export function CoverImage({
   className,
   alt = "",
   zoom = false,
+  grain = false,
 }: {
   src?: string | null;
   gradient: string;
   className?: string;
   alt?: string;
   zoom?: boolean;
+  grain?: boolean;
 }) {
   const [failed, setFailed] = useState(false);
   const showImg = Boolean(src) && !failed;
@@ -47,6 +50,7 @@ export function CoverImage({
           {alt.trim().charAt(0) || "В"}
         </span>
       )}
+      {grain && <span aria-hidden className="grain-overlay" />}
     </div>
   );
 }

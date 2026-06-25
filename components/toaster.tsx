@@ -6,7 +6,7 @@ import { useToasts } from "@/lib/toast-store";
 export function Toaster() {
   const toasts = useToasts((s) => s.toasts);
   return (
-    <div className="pointer-events-none fixed bottom-5 right-5 z-[70] flex flex-col gap-2">
+    <div className="pointer-events-none fixed bottom-20 right-5 z-[70] flex flex-col gap-2 md:bottom-5">
       {toasts.map((t) => (
         <div
           key={t.id}

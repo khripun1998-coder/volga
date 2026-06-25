@@ -152,11 +152,11 @@ export default async function AccountPage() {
           <dl className="space-y-3 text-sm">
             <div className="flex justify-between"><dt className="text-muted">Имя</dt><dd className="text-graphite">{ctx?.buyer.name ?? "—"}</dd></div>
             <div className="flex justify-between"><dt className="text-muted">Email</dt><dd className="text-graphite">{ctx?.buyer.email ?? "—"}</dd></div>
-            <div className="flex justify-between"><dt className="text-muted">Телефон</dt><dd className="text-graphite">+7 918 000-00-00</dd></div>
+            <div className="flex justify-between"><dt className="text-muted">Телефон</dt><dd className="text-muted">Не указан</dd></div>
             <div className="flex items-start justify-between gap-4">
               <dt className="text-muted">Адрес</dt>
-              <dd className="inline-flex items-center gap-1.5 text-right text-graphite">
-                <MapPin className="h-4 w-4 shrink-0" strokeWidth={1.6} /> г. Краснодар, ул. Красная, 1
+              <dd className="inline-flex items-center gap-1.5 text-right text-muted">
+                <MapPin className="h-4 w-4 shrink-0" strokeWidth={1.6} /> Не указан
               </dd>
             </div>
           </dl>

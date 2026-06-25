@@ -9,6 +9,7 @@ import {
 import { getCatalog, getCatalogFacets } from "@/lib/queries";
 import { ProductsView } from "@/components/products-view";
 import { CategoryNav } from "@/components/category-nav";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import { pluralize } from "@/lib/utils";
 
 export const metadata = { title: "Каталог — Волга" };
@@ -73,6 +74,10 @@ export default async function CatalogPage({
 
   return (
     <div className="container-page py-6">
+      <Breadcrumbs
+        items={[{ label: "Главная", href: "/" }, { label: "Каталог" }]}
+        className="mb-4"
+      />
       {/* Категории-чипсы (клик сохраняет остальные фильтры) */}
       <CategoryNav
         categories={facets.categories}

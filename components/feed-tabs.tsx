@@ -5,15 +5,9 @@ import { cn } from "@/lib/utils";
  * Переключатель «Товары / Магазины» (Aurora). По умолчанию открыты Магазины
  * («в центре внимания — сами магазины»): "/" = магазины, "/?view=products" = товары.
  */
-export function FeedTabs({
-  active,
-  basePath = "/",
-}: {
-  active: "products" | "shops";
-  basePath?: string;
-}) {
-  const shopsHref = basePath;
-  const productsHref = `${basePath}${basePath.includes("?") ? "&" : "?"}view=products`;
+export function FeedTabs({ active }: { active: "products" | "shops" }) {
+  const shopsHref = "/";
+  const productsHref = "/?view=products";
 
   return (
     <div

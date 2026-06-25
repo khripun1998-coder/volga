@@ -38,13 +38,13 @@ export function ProductPurchase({ product, stock, madeToOrder = false, shopSlug,
   const maxQty = madeToOrder ? 99 : stock;
 
   const doAdd = () => {
-    add({ ...product, variant }, qty);
+    add({ ...product, variant, maxQty }, qty);
     notify(`«${product.title}» — в корзине`);
     setAdded(true);
     window.setTimeout(() => setAdded(false), 1400);
   };
   const doBuy = () => {
-    add({ ...product, variant }, qty);
+    add({ ...product, variant, maxQty }, qty);
     router.push("/cart");
   };
 

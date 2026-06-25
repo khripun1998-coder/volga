@@ -78,24 +78,33 @@ export async function getSellerContext(ownerId?: string) {
 }
 
 export async function getAdminDashboard() {
-  const [users, shops, activeProducts, orders, pending, openDisputes, revenue] =
+  const [users, shops, activeProducts, orderRows, pending, openDisputes, escrowHeld] =
     await Promise.all([
       prisma.user.count(),
       prisma.shop.count(),
       prisma.product.count({ where: { status: "ACTIVE" } }),
-      prisma.order.count(),
+      prisma.order.findMany({ select: { createdAt: true, total: true } }),
       prisma.product.count({ where: { status: "PENDING" } }),
       prisma.dispute.count({ where: { status: { not: "RESOLVED" } } }),
-      prisma.order.aggregate({ _sum: { total: true } }),
+      prisma.order.aggregate({ _sum: { total: true }, where: { escrowStatus: "HELD" } }),
     ]);
+  // Тренды неделя-к-неделе по тем же помощникам, что и кабинет продавца.
+  const dates = orderRows.map((o) => o.createdAt);
+  const orderSpark = dailyBuckets(dates, null, 14);
+  const revSpark = dailyBuckets(dates, orderRows.map((o) => o.total), 14);
   return {
     users,
     shops,
     activeProducts,
-    orders,
+    orders: orderRows.length,
     pending,
     openDisputes,
-    revenue: revenue._sum.total ?? 0,
+    revenue: orderRows.reduce((sum, o) => sum + o.total, 0),
+    escrowHeld: escrowHeld._sum.total ?? 0,
+    orderSpark,
+    orderDelta: trendDelta(orderSpark),
+    revSpark,
+    revDelta: trendDelta(revSpark),
   };
 }
 

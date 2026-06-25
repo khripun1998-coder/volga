@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { getShopBySlug, getShopClientCount } from "@/lib/queries";
 import { ChannelHeader } from "@/components/channel-header";
 import { ChannelTabs } from "@/components/channel-tabs";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import { getShopTheme, themeVars } from "@/lib/shop-theme";
 
 export default async function ShopLayout({
@@ -22,6 +23,15 @@ export default async function ShopLayout({
 
   return (
     <div style={themeVars(theme)}>
+      <div className="container-page pt-3">
+        <Breadcrumbs
+          items={[
+            { label: "Главная", href: "/" },
+            { label: "Магазины", href: "/shops" },
+            { label: shop.name },
+          ]}
+        />
+      </div>
       <ChannelHeader
         shop={shop}
         theme={theme}

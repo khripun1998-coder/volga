@@ -25,10 +25,16 @@ export function DashShell({
     nav[0] ? tabId(nav[0].href) : sections[0]?.props.id ?? ""
   );
 
-  // Прямые ссылки на раздел (например /seller#orders, /account#messages) открывают нужный таб.
+  // Прямые ссылки на раздел (/seller#orders, /account#messages) открывают нужный таб —
+  // как при заходе, так и при клике по такой ссылке, уже находясь на странице (hashchange).
   useEffect(() => {
-    const h = window.location.hash.replace(/^#/, "");
-    if (h && sections.some((s) => s.props.id === h)) setActive(h);
+    const apply = () => {
+      const h = window.location.hash.replace(/^#/, "");
+      if (h && sections.some((s) => s.props.id === h)) setActive(h);
+    };
+    apply();
+    window.addEventListener("hashchange", apply);
+    return () => window.removeEventListener("hashchange", apply);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -51,12 +57,14 @@ export function DashShell({
               return (
                 <button
                   key={n.href}
+                  id={`tab-${id}`}
                   type="button"
                   role="tab"
                   aria-selected={on}
+                  aria-controls={`panel-${id}`}
                   onClick={() => setActive(id)}
                   className={cn(
-                    "whitespace-nowrap rounded-lg px-3 py-2 text-left text-sm font-medium transition",
+                    "flex min-h-11 items-center whitespace-nowrap rounded-lg px-3 py-2 text-left text-sm font-medium transition",
                     on
                       ? "bg-accent text-white shadow-[var(--shadow-accent)]"
                       : "text-graphite/80 hover:bg-cream hover:text-accent"
@@ -70,7 +78,13 @@ export function DashShell({
         </aside>
         <div className="min-w-0">
           {sections.map((child) => (
-            <div key={child.props.id} hidden={child.props.id !== active}>
+            <div
+              key={child.props.id}
+              id={`panel-${child.props.id}`}
+              role="tabpanel"
+              aria-labelledby={`tab-${child.props.id}`}
+              hidden={child.props.id !== active}
+            >
               {child}
             </div>
           ))}

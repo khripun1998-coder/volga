@@ -92,11 +92,10 @@ export function ProductsView({
       </div>
 
       <div className={cn("grid", GRID[mode])}>
-        {products.map((p, i) => (
+        {products.map((p) => (
           <ProductCard
             key={p.id}
             product={p}
-            index={i}
             row={mode === "one"}
             layout={cardLayout}
             showRating={showRating}

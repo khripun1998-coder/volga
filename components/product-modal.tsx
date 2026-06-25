@@ -10,15 +10,36 @@ export function ProductModal({ children }: { children: React.ReactNode }) {
   const dialogRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const opener = document.activeElement as HTMLElement | null;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") close();
+      if (e.key === "Escape") {
+        close();
+        return;
+      }
+      if (e.key === "Tab" && dialogRef.current) {
+        const f = dialogRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, textarea, select, [tabindex]:not([tabindex="-1"])'
+        );
+        if (f.length === 0) return;
+        const first = f[0];
+        const last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     };
     document.addEventListener("keydown", onKey);
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    dialogRef.current?.focus();
     return () => {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = prev;
+      opener?.focus?.();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -28,6 +49,7 @@ export function ProductModal({ children }: { children: React.ReactNode }) {
       className="fixed inset-0 z-[60] flex items-center justify-center p-3 sm:p-6"
       role="dialog"
       aria-modal="true"
+      aria-label="Просмотр товара"
     >
       <button
         type="button"
@@ -37,7 +59,8 @@ export function ProductModal({ children }: { children: React.ReactNode }) {
       />
       <div
         ref={dialogRef}
-        className="relative flex max-h-[88vh] w-full max-w-3xl flex-col overflow-hidden rounded-[24px] bg-paper shadow-[0_40px_80px_-30px_rgba(0,0,0,0.45)]"
+        tabIndex={-1}
+        className="relative flex max-h-[88vh] w-full max-w-3xl flex-col overflow-hidden rounded-[24px] bg-paper shadow-[0_40px_80px_-30px_rgba(0,0,0,0.45)] focus:outline-none"
       >
         <div className="sticky top-0 z-10 flex h-14 shrink-0 items-center justify-end gap-2 border-b border-line bg-paper/85 px-4 backdrop-blur">
           <button

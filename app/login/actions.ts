@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
 import { prisma } from "@/lib/prisma";
-import { setSession, clearSession } from "@/lib/session";
+import { setSession, clearSession, DEMO_ENABLED } from "@/lib/session";
 
 function hashPassword(pw: string): string {
   const salt = randomBytes(16).toString("hex");
@@ -29,8 +29,11 @@ export async function login(formData: FormData) {
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) redirect("/login?error=1");
 
-  // Если у пользователя задан пароль — проверяем. Демо‑аккаунты без хэша пускаем с любым паролем.
-  if (user.passwordHash && !verifyPassword(password, user.passwordHash)) {
+  if (user.passwordHash) {
+    // Обычный путь: проверяем пароль по хэшу.
+    if (!verifyPassword(password, user.passwordHash)) redirect("/login?error=1");
+  } else if (!DEMO_ENABLED) {
+    // Аккаунт без пароля (засеянный демо-профиль) вне демо-режима — вход запрещён.
     redirect("/login?error=1");
   }
 
@@ -42,7 +45,12 @@ export async function register(formData: FormData) {
   const name = String(formData.get("name") ?? "").trim();
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const password = String(formData.get("password") ?? "");
-  if (!name || !email) redirect("/login?error=reg");
+  // Базовая валидация: имя, корректный e-mail (линейный, без катастрофического
+  // бэктрекинга) и пароль не короче 8 символов — чтобы у самостоятельно
+  // зарегистрированных всегда был хэш пароля.
+  if (!name || email.length > 254 || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) || password.length < 8) {
+    redirect("/login?error=reg");
+  }
 
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) redirect("/login?error=exists");
@@ -52,7 +60,7 @@ export async function register(formData: FormData) {
       name,
       email,
       role: "BUYER",
-      passwordHash: password ? hashPassword(password) : null,
+      passwordHash: hashPassword(password),
     },
   });
 

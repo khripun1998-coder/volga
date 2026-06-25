@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCart, selectTotal } from "@/lib/cart-store";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import { cn, formatPrice } from "@/lib/utils";
 import { createOrder } from "./actions";
 
@@ -18,30 +19,29 @@ function Radio({
   checked,
   onChange,
   label,
+  name,
 }: {
   checked: boolean;
   onChange: () => void;
   label: string;
+  name: string;
 }) {
   return (
-    <button
-      type="button"
-      onClick={onChange}
+    <label
       className={cn(
-        "flex items-center gap-3 rounded-lg border px-4 py-3 text-left text-sm transition",
+        "flex cursor-pointer items-center gap-3 rounded-lg border px-4 py-3 text-left text-sm transition",
         checked ? "border-accent bg-accent-soft" : "border-line hover:border-accent/50"
       )}
     >
-      <span
-        className={cn(
-          "grid h-4 w-4 place-items-center rounded-full border",
-          checked ? "border-accent" : "border-muted"
-        )}
-      >
-        {checked && <span className="h-2 w-2 rounded-full bg-accent" />}
-      </span>
+      <input
+        type="radio"
+        name={name}
+        checked={checked}
+        onChange={onChange}
+        className="h-4 w-4 accent-accent"
+      />
       <span className="text-graphite">{label}</span>
-    </button>
+    </label>
   );
 }
 
@@ -121,6 +121,14 @@ export default function CheckoutPage() {
 
   return (
     <div className="container-page py-10">
+      <Breadcrumbs
+        items={[
+          { label: "Главная", href: "/" },
+          { label: "Корзина", href: "/cart" },
+          { label: "Оформление" },
+        ]}
+        className="mb-4"
+      />
       <h1 className="font-display text-3xl font-semibold text-graphite md:text-4xl">
         Оформление заказа
       </h1>
@@ -158,11 +166,13 @@ export default function CheckoutPage() {
             </h2>
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               <Radio
+                name="receive"
                 checked={receive === "delivery"}
                 onChange={() => setReceive("delivery")}
                 label="Доставка"
               />
               <Radio
+                name="receive"
                 checked={receive === "pickup"}
                 onChange={() => setReceive("pickup")}
                 label="Самовывоз"
@@ -182,6 +192,7 @@ export default function CheckoutPage() {
                   {deliveryMethods.map((m) => (
                     <Radio
                       key={m}
+                      name="delivery-method"
                       checked={deliveryMethod === m}
                       onChange={() => setDeliveryMethod(m)}
                       label={m}
@@ -206,6 +217,7 @@ export default function CheckoutPage() {
               {paymentMethods.map((m) => (
                 <Radio
                   key={m}
+                  name="payment"
                   checked={payment === m}
                   onChange={() => setPayment(m)}
                   label={m}

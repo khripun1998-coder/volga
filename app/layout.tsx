@@ -3,6 +3,7 @@ import { Manrope, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/layout/site-header";
 import { AppSidebar } from "@/components/layout/app-sidebar";
+import { MobileTabBar } from "@/components/layout/mobile-tab-bar";
 import { ChromeWrapper } from "@/components/layout/chrome-wrapper";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SmoothScroll } from "@/components/smooth-scroll";
@@ -45,6 +46,7 @@ export default async function RootLayout({
           sidebar={<AppSidebar session={session} />}
           header={<SiteHeader session={session} />}
           footer={<SiteFooter />}
+          bottomBar={<MobileTabBar session={session} />}
         >
           {children}
         </ChromeWrapper>
