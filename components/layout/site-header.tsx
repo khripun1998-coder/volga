@@ -11,7 +11,7 @@ type Session = { id: string; name: string; role: string } | null;
 
 export function SiteHeader({ session }: { session: Session }) {
   return (
-    <header className="sticky top-0 z-30 bg-canvas/85 backdrop-blur">
+    <header className="sticky top-0 z-40 bg-canvas/85 backdrop-blur">
       <div className="flex h-[72px] items-center gap-4 px-5 md:px-8">
         <SearchBox className="hidden md:block" />
         <div className="ml-auto flex items-center gap-2">
